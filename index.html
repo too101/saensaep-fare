@@ -163,6 +163,8 @@ h2{font-size:17px;font-weight:600;color:var(--water-deep)}
 .chip{font-size:13px;font-weight:600;padding:5px 14px;border-radius:99px}
 
 .note{margin-top:26px;font-size:13.5px;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:14px}
+.note .src{color:var(--water);font-weight:600;text-decoration-color:var(--line);text-underline-offset:3px}
+.note .src:hover{text-decoration-color:var(--water)}
 
 @media (max-width:680px){
   .route{column-gap:16px}
@@ -211,6 +213,17 @@ h2{font-size:17px;font-weight:600;color:var(--water-deep)}
     <p class="result-detail" id="detail"></p>
   </div>
 
+  <div class="route-head">
+    <h2>แผนผังเส้นทาง 27 ท่า</h2>
+    <span class="hint">แตะที่ท่าเพื่อเลือกต้นทาง/ปลายทาง · ตัวเลขขวามือคือราคาจากท่าต้นทาง</span>
+  </div>
+  <div class="route" id="route">
+    <div class="col" id="colA"></div>
+    <div class="col" id="colB"></div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
   <details class="settings" id="settings">
     <summary>ปรับค่าโดยสารเริ่มต้น <span id="baseTag"></span></summary>
     <div class="settings-body">
@@ -223,19 +236,10 @@ h2{font-size:17px;font-weight:600;color:var(--water-deep)}
     </div>
   </details>
 
-  <div class="route-head">
-    <h2>แผนผังเส้นทาง 27 ท่า</h2>
-    <span class="hint">แตะที่ท่าเพื่อเลือกต้นทาง/ปลายทาง · ตัวเลขขวามือคือราคาจากท่าต้นทาง</span>
-  </div>
-  <div class="route" id="route">
-    <div class="col" id="colA"></div>
-    <div class="col" id="colB"></div>
-  </div>
-
-  <div class="legend" id="legend"></div>
-
   <p class="note">
-    ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง
+    ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง ·
+    <a class="src" href="https://github.com/too101/saensaep-fare/archive/refs/heads/main.zip">ดาวน์โหลดซอร์สโค้ด</a> ·
+    <a class="src" href="https://github.com/too101/saensaep-fare">ดูโค้ดบน GitHub</a>
   </p>
 </div>
 </div>
@@ -273,6 +277,10 @@ detail=document.getElementById("detail"),legend=document.getElementById("legend"
 baseFare=document.getElementById("baseFare"),baseTag=document.getElementById("baseTag");
 
 const btns=[];
+[from,to].forEach(s=>{
+  const ph=new Option("— เลือกท่า —","");
+  s.add(ph);
+});
 piers.forEach((p,i)=>{
   from.add(new Option((i+1)+". "+full(p),i));
   to.add(new Option((i+1)+". "+full(p),i));
@@ -319,30 +327,47 @@ document.getElementById("resetBase").addEventListener("click",()=>{
 });
 
 function update(){
-  const a=+from.value,b=+to.value,t=tier(a,b),f=adj(t);
-  const lo=Math.min(a,b),hi=Math.max(a,b);
+  const a=from.value===""?null:+from.value;
+  const b=to.value===""?null:+to.value;
+
+  btns.forEach(el=>{
+    const i=+el.dataset.i;
+    el.classList.toggle("sel",i===a||i===b);
+    el.classList.toggle("between",a!==null&&b!==null&&a!==b&&i>Math.min(a,b)&&i<Math.max(a,b));
+    const fee=el.querySelector(".fee");
+    if(a===null){fee.textContent="";el.classList.remove("show-fee");}
+    else if(i===a){fee.textContent="ต้นทาง";el.classList.add("show-fee");}
+    else{fee.textContent=adj(tier(a,i))+" ฿";el.classList.add("show-fee");}
+  });
+
+  if(a===null&&b===null){
+    fareNum.textContent="–";
+    detail.innerHTML="แตะเลือก<strong>ท่าต้นทาง</strong>และ<strong>ท่าปลายทาง</strong>จากแผนผังด้านล่าง หรือใช้ช่องเลือกด้านบน";
+    badge.style.background=css("--f13");badge.style.color=css("--f13t");
+    return;
+  }
+  if(a===null||b===null){
+    fareNum.textContent="–";
+    detail.innerHTML=a===null
+      ?"เลือก<strong>ท่าต้นทาง</strong>อีกหนึ่งจุดเพื่อดูราคา"
+      :'<strong>'+full(piers[a])+'</strong> → ?<br>เลือก<strong>ท่าปลายทาง</strong>อีกหนึ่งจุด หรือดูราคาที่กำกับไว้ท้ายชื่อแต่ละท่า';
+    badge.style.background=css("--f13");badge.style.color=css("--f13t");
+    return;
+  }
+  const t=tier(a,b),f=adj(t);
   if(f===null){
     fareNum.textContent="–";
     detail.innerHTML="ต้นทางและปลายทางเป็นท่าเดียวกัน — เลือกท่าปลายทางอีกครั้ง";
     badge.style.background=css("--f13");badge.style.color=css("--f13t");
   }else{
+    const lo=Math.min(a,b),hi=Math.max(a,b),stops=hi-lo-1;
     fareNum.textContent=f;
-    const stops=hi-lo-1;
     detail.innerHTML='<strong>'+full(piers[a])+'</strong> → <strong>'+full(piers[b])+'</strong><br>ระยะ '+(hi-lo)+' ช่วงท่า'+(stops>0?' · จอดรับส่งระหว่างทาง '+stops+' ท่า':' (ท่าถัดไป)');
     badge.style.background=css(tiers[t][0]);
     badge.style.color=css(tiers[t][1]);
   }
-  btns.forEach(el=>{
-    const i=+el.dataset.i;
-    el.classList.toggle("sel",i===a||i===b);
-    el.classList.toggle("between",i>lo&&i<hi&&a!==b);
-    const fee=el.querySelector(".fee");
-    if(i!==a){fee.textContent=adj(tier(a,i))+" ฿";el.classList.add("show-fee");}
-    else{fee.textContent="ต้นทาง";el.classList.add("show-fee");}
-  });
 }
 
-from.value=4;to.value=25;
 drawLegend();
 update();
 </script>
