@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ค่าโดยสารเรือคลองแสนแสบ</title>
+<meta name="description" content="เช็กค่าโดยสารเรือคลองแสนแสบ ผ่านฟ้าฯ–วัดศรีบุญเรือง ครบ 27 ท่า แตะเลือกต้นทาง-ปลายทาง รู้ราคาทันที">
+<meta property="og:type" content="website">
+<meta property="og:title" content="เช็กค่าโดยสารเรือคลองแสนแสบ ครบ 27 ท่า">
+<meta property="og:description" content="แตะเลือกท่าต้นทาง-ปลายทาง รู้ราคาทันที ผ่านฟ้าฯ–วัดศรีบุญเรือง">
+<meta property="og:url" content="https://too101.github.io/saensaep-fare/">
+<meta property="og:image" content="https://too101.github.io/saensaep-fare/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600&family=Chonburi&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1F6F3;
+  --ink:#132C26;
+  --ink-soft:#4C6A61;
+  --water:#0E6B54;
+  --water-deep:#0A4A3B;
+  --boat:#E4572E;
+  --line:#C9D8D1;
+  --card:#FFFFFF;
+  --f13:#DFF2E9; --f13t:#0A5741;
+  --f15:#BFE7D6; --f15t:#0A5741;
+  --f17:#8FD4BA; --f17t:#0A4A3B;
+  --f19:#4FB894; --f19t:#06382C;
+  --f21:#1D9270; --f21t:#EAFBF4;
+  --f23:#0A5741; --f23t:#EAFBF4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Anuphan',-apple-system,'Segoe UI',sans-serif;
+  background:var(--paper); color:var(--ink);
+  line-height:1.65; font-size:16px;
+  padding:0 0 64px;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+header{padding:44px 0 8px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;letter-spacing:.06em;
+  color:var(--boat);text-transform:uppercase
+}
+.eyebrow::before{content:"";width:26px;height:3px;background:var(--boat);border-radius:2px}
+h1{
+  font-family:'Chonburi',serif;font-weight:400;
+  font-size:clamp(28px,5.4vw,44px);line-height:1.25;
+  color:var(--water-deep);margin:6px 0 4px
+}
+.sub{color:var(--ink-soft);max-width:56ch}
+
+.card{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:24px;margin-top:24px
+}
+
+.pickers{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:end}
+label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:6px}
+select{
+  width:100%;height:46px;padding:0 12px;
+  font:inherit;font-size:15px;color:var(--ink);
+  background:#FBFDFC;border:1.5px solid var(--line);border-radius:10px;
+  cursor:pointer;appearance:auto
+}
+select:focus-visible,button:focus-visible,input:focus-visible{
+  outline:3px solid var(--boat);outline-offset:2px
+}
+#swap{
+  height:46px;width:46px;border-radius:10px;
+  border:1.5px solid var(--line);background:#FBFDFC;
+  font-size:20px;color:var(--water);cursor:pointer;
+  transition:transform .15s ease
+}
+#swap:hover{border-color:var(--water)}
+#swap:active{transform:scale(.94)}
+
+.result{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:22px}
+.fare-badge{
+  min-width:150px;text-align:center;
+  border-radius:14px;padding:14px 26px 10px;
+  background:var(--f13);color:var(--f13t);
+  transition:background .25s ease,color .25s ease
+}
+.fare-badge .num{font-family:'Chonburi',serif;font-size:52px;line-height:1;display:block}
+.fare-badge .unit{font-size:15px;font-weight:600}
+.result-detail{flex:1;min-width:220px;color:var(--ink-soft);font-size:15px}
+.result-detail strong{color:var(--ink);font-weight:600}
+
+.settings{margin-top:22px}
+.settings summary{
+  display:inline-flex;align-items:center;gap:8px;
+  list-style:none;cursor:pointer;user-select:none;
+  font-size:13.5px;font-weight:600;color:var(--ink-soft);
+  padding:7px 14px;border:1.5px dashed var(--line);border-radius:99px;
+}
+.settings summary::-webkit-details-marker{display:none}
+.settings summary::before{content:"⚙";font-size:15px;color:var(--water)}
+.settings summary:hover{border-color:var(--water);color:var(--water)}
+.settings[open] summary{border-style:solid;border-color:var(--water);color:var(--water)}
+.settings-body{
+  margin-top:12px;padding:16px;border-radius:12px;
+  background:#F6FAF8;border:1px solid var(--line);
+  display:flex;align-items:end;gap:14px;flex-wrap:wrap
+}
+.settings-body .field{min-width:200px}
+.settings-body input[type=number]{
+  width:120px;height:44px;padding:0 12px;
+  font:inherit;font-size:16px;font-weight:600;color:var(--ink);
+  background:#fff;border:1.5px solid var(--line);border-radius:10px
+}
+#resetBase{
+  height:44px;padding:0 18px;border-radius:10px;font:inherit;font-size:14px;font-weight:600;
+  border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer
+}
+#resetBase:hover{border-color:var(--water);color:var(--water)}
+.settings-note{flex-basis:100%;font-size:13px;color:var(--ink-soft);margin-top:2px}
+
+.route-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:34px 0 4px;flex-wrap:wrap}
+h2{font-size:17px;font-weight:600;color:var(--water-deep)}
+.hint{font-size:13px;color:var(--ink-soft)}
+
+.route{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+.route .col{position:relative;padding-top:8px}
+.route .col::before{
+  content:"";position:absolute;left:14px;top:22px;bottom:22px;
+  width:4px;border-radius:2px;background:var(--line)
+}
+.pier{
+  position:relative;display:flex;align-items:center;gap:10px;
+  width:100%;text-align:left;padding:6px 8px 6px 4px;
+  background:none;border:0;border-radius:10px;
+  font:inherit;font-size:14.5px;color:var(--ink);cursor:pointer
+}
+.pier:hover{background:#E7F0EC}
+.pier .dot{
+  flex:none;width:14px;height:14px;margin-left:4px;border-radius:50%;
+  background:var(--paper);border:3px solid var(--line);
+  transition:all .15s ease;position:relative;z-index:1
+}
+.pier .no{flex:none;width:22px;font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.pier .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pier.sel .dot{background:var(--boat);border-color:var(--boat)}
+.pier.sel{font-weight:600}
+.pier.sel .nm{color:var(--boat)}
+.pier.between .dot{border-color:var(--water);background:var(--water)}
+.pier .fee{
+  flex:none;font-size:12.5px;font-weight:600;min-width:44px;text-align:right;
+  color:var(--water);visibility:hidden;font-variant-numeric:tabular-nums
+}
+.pier.show-fee .fee{visibility:visible}
+.pier.sel .fee{color:var(--boat)}
+
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px}
+.chip{font-size:13px;font-weight:600;padding:5px 14px;border-radius:99px}
+
+.note{margin-top:26px;font-size:13.5px;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:14px}
+
+@media (max-width:680px){
+  .route{column-gap:16px}
+  .pier{font-size:13px;gap:7px}
+  .pier .no{display:none}
+  .pier .paren{display:none}
+  .pier .fee{min-width:38px}
+}
+@media (max-width:560px){
+  .pickers{grid-template-columns:1fr;gap:10px}
+  #swap{width:100%;justify-self:stretch}
+}
+@media print{
+  body{background:#fff;padding-bottom:0}
+  .card{border:none;padding:0}
+  .pickers,.hint,.settings{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="eyebrow">เรือโดยสารคลองแสนแสบ</span>
+  <h1>ค่าโดยสาร ผ่านฟ้าฯ – วัดศรีบุญเรือง</h1>
+  <p class="sub">เลือกท่าต้นทางและปลายทาง หรือแตะจุดบนแผนผังเส้นทางสองจุด ระบบจะแสดงค่าโดยสารทันที</p>
+</header>
+
+<div class="card">
+  <div class="pickers">
+    <div>
+      <label for="from">ท่าต้นทาง</label>
+      <select id="from"></select>
+    </div>
+    <button id="swap" type="button" aria-label="สลับต้นทาง-ปลายทาง" title="สลับต้นทาง-ปลายทาง">⇄</button>
+    <div>
+      <label for="to">ท่าปลายทาง</label>
+      <select id="to"></select>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="fare-badge" id="badge" role="status" aria-live="polite">
+      <span class="num" id="fareNum">–</span>
+      <span class="unit">บาท</span>
+    </div>
+    <p class="result-detail" id="detail"></p>
+  </div>
+
+  <details class="settings" id="settings">
+    <summary>ปรับค่าโดยสารเริ่มต้น <span id="baseTag"></span></summary>
+    <div class="settings-body">
+      <div class="field">
+        <label for="baseFare">ค่าโดยสารเริ่มต้น (ระยะใกล้สุด, บาท)</label>
+        <input type="number" id="baseFare" value="13" min="1" max="99" step="1" inputmode="numeric">
+      </div>
+      <button id="resetBase" type="button">คืนค่าเดิม (13 บาท)</button>
+      <p class="settings-note">เมื่ออัตราค่าโดยสารปรับขึ้น ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตามโดยส่วนต่างระหว่างระยะคงเดิม (+2 บาทต่อขั้น)</p>
+    </div>
+  </details>
+
+  <div class="route-head">
+    <h2>แผนผังเส้นทาง 27 ท่า</h2>
+    <span class="hint">แตะที่ท่าเพื่อเลือกต้นทาง/ปลายทาง · ตัวเลขขวามือคือราคาจากท่าต้นทาง</span>
+  </div>
+  <div class="route" id="route">
+    <div class="col" id="colA"></div>
+    <div class="col" id="colB"></div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <p class="note">
+    ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง
+  </p>
+</div>
+</div>
+
+<script>
+const piers=[
+["ผ่านฟ้าลีลาศ",""],["ตลาดโบ๊เบ๊",""],["สะพานเจริญผล",""],["สะพานหัวช้าง",""],["ประตูน้ำ"," (Center Pier)"],
+["ชิดลม",""],["สะพานวิทยุ",""],["นานาเหนือ",""],["นานาชาติ",""],["อโศก-เพชรบุรี"," (MRT สายสีน้ำเงิน)"],
+["มศว ประสานมิตร",""],["อิตัลไทย",""],["สุเหร่าบ้านดอน",""],["ทองหล่อ",""],["ชาญอิสระ",""],
+["โรงเรียนวิจิตร",""],["สะพานคลองตัน",""],["รามหนึ่ง"," (Airport Link)"],["เดอะมอลล์รามคำแหง"," (เดอะมอลล์ 3)"],["รามคำแหง 29",""],
+["วัดเทพลีลา",""],["ม.รามคำแหง"," (ซ.51/2)"],["สะพานมิตรมหาดไทย"," (ซ.65)"],["วัดกลาง"," (ซ.81)"],["เดอะมอลล์ไลฟ์สโตร์บางกะปิ",""],
+["บางกะปิ / ตลาดบางกะปิ",""],["วัดศรีบุญเรือง",""]];
+const full=p=>p[0]+p[1];
+
+const rle=["13x1","13x2","13x3","15x1,13x3","15x3,13x2","15x3,13x3",
+"17x1,15x3,13x3","17x2,15x2,13x4","17x3,15x2,13x4","17x4,15x2,13x4",
+"17x4,15x3,13x4","17x5,15x3,13x4","19x1,17x5,15x2,13x5","19x2,17x5,15x2,13x5",
+"19x4,17x4,15x2,13x5","19x5,17x4,15x2,13x5","19x6,17x4,15x2,13x5",
+"21x2,19x6,17x4,15x2,13x4","21x5,19x5,17x4,15x2,13x3","21x6,19x5,17x4,15x2,13x3",
+"21x7,19x5,17x4,15x2,13x3","23x1,21x7,19x5,17x4,15x2,13x3","23x4,21x6,19x4,17x4,15x2,13x3",
+"23x5,21x6,19x4,17x4,15x2,13x3","23x6,21x6,19x4,17x4,15x2,13x3","23x7,21x6,19x4,17x4,15x2,13x3"];
+const M=rle.map(r=>r.split(",").flatMap(p=>{const[v,n]=p.split("x").map(Number);return Array(n).fill(v)}));
+const tier=(a,b)=>a===b?null:M[Math.max(a,b)-1][Math.min(a,b)];
+
+let base=13;
+const adj=t=>t===null?null:t+(base-13);
+
+const tiers={13:["--f13","--f13t"],15:["--f15","--f15t"],17:["--f17","--f17t"],19:["--f19","--f19t"],21:["--f21","--f21t"],23:["--f23","--f23t"]};
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+const from=document.getElementById("from"),to=document.getElementById("to"),
+colA=document.getElementById("colA"),colB=document.getElementById("colB"),
+badge=document.getElementById("badge"),fareNum=document.getElementById("fareNum"),
+detail=document.getElementById("detail"),legend=document.getElementById("legend"),
+baseFare=document.getElementById("baseFare"),baseTag=document.getElementById("baseTag");
+
+const btns=[];
+piers.forEach((p,i)=>{
+  from.add(new Option((i+1)+". "+full(p),i));
+  to.add(new Option((i+1)+". "+full(p),i));
+  const b=document.createElement("button");
+  b.type="button";b.className="pier";b.dataset.i=i;b.title=full(p);
+  b.innerHTML='<span class="dot"></span><span class="no">'+(i+1)+'</span>'+
+    '<span class="nm">'+p[0]+'<span class="paren">'+p[1]+'</span></span>'+
+    '<span class="fee"></span>';
+  b.addEventListener("click",()=>pick(i));
+  (i<14?colA:colB).appendChild(b);
+  btns.push(b);
+});
+
+function drawLegend(){
+  legend.innerHTML="";
+  Object.keys(tiers).forEach(f=>{
+    const c=document.createElement("span");
+    c.className="chip";
+    c.style.background=css(tiers[f][0]);
+    c.style.color=css(tiers[f][1]);
+    c.textContent=adj(+f)+" บาท";
+    legend.appendChild(c);
+  });
+  baseTag.textContent=base!==13?"· เริ่มต้น "+base+" บาท":"";
+}
+
+let picking=0;
+function pick(i){
+  if(picking===0){from.value=i;picking=1;}
+  else{to.value=i;picking=0;}
+  update();
+}
+from.addEventListener("change",()=>{picking=1;update()});
+to.addEventListener("change",()=>{picking=0;update()});
+document.getElementById("swap").addEventListener("click",()=>{
+  const t=from.value;from.value=to.value;to.value=t;update();
+});
+baseFare.addEventListener("input",()=>{
+  const v=parseInt(baseFare.value,10);
+  if(!isNaN(v)&&v>=1&&v<=99){base=v;drawLegend();update();}
+});
+document.getElementById("resetBase").addEventListener("click",()=>{
+  base=13;baseFare.value=13;drawLegend();update();
+});
+
+function update(){
+  const a=+from.value,b=+to.value,t=tier(a,b),f=adj(t);
+  const lo=Math.min(a,b),hi=Math.max(a,b);
+  if(f===null){
+    fareNum.textContent="–";
+    detail.innerHTML="ต้นทางและปลายทางเป็นท่าเดียวกัน — เลือกท่าปลายทางอีกครั้ง";
+    badge.style.background=css("--f13");badge.style.color=css("--f13t");
+  }else{
+    fareNum.textContent=f;
+    const stops=hi-lo-1;
+    detail.innerHTML='<strong>'+full(piers[a])+'</strong> → <strong>'+full(piers[b])+'</strong><br>ระยะ '+(hi-lo)+' ช่วงท่า'+(stops>0?' · จอดรับส่งระหว่างทาง '+stops+' ท่า':' (ท่าถัดไป)');
+    badge.style.background=css(tiers[t][0]);
+    badge.style.color=css(tiers[t][1]);
+  }
+  btns.forEach(el=>{
+    const i=+el.dataset.i;
+    el.classList.toggle("sel",i===a||i===b);
+    el.classList.toggle("between",i>lo&&i<hi&&a!==b);
+    const fee=el.querySelector(".fee");
+    if(i!==a){fee.textContent=adj(tier(a,i))+" ฿";el.classList.add("show-fee");}
+    else{fee.textContent="ต้นทาง";el.classList.add("show-fee");}
+  });
+}
+
+from.value=4;to.value=25;
+drawLegend();
+update();
+</script>
+</body>
+</html>
