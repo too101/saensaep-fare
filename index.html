@@ -180,12 +180,14 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
 /* ---------- โหมดมือถือ: จอเดียว ไม่ต้องเลื่อน ---------- */
 @media (max-width:680px){
   body{height:100vh;height:100dvh;overflow:hidden}
-  body.scrollable{height:auto;overflow-y:auto}
+  body.scrollable,body.autoscroll{height:auto;overflow-y:auto}
   .app{
     height:100%;display:flex;flex-direction:column;
     padding:0 12px 10px
   }
-  body.scrollable .app{height:auto}
+  body.scrollable .app,body.autoscroll .app{height:auto}
+  body.autoscroll .route{flex:none}
+  body.autoscroll .route .col{grid-auto-rows:auto}
   header{padding:12px 0 0}
   .eyebrow{display:none}
   h1{font-size:19px;margin:0}
@@ -290,7 +292,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 13;
-const APP_VERSION = "1.5";
+const APP_VERSION = "1.6";
 const APP_UPDATED = "2026-07-19";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
@@ -421,6 +423,23 @@ function update(){
 
 drawLegend();
 update();
+
+/* ---------- ตรวจว่าเนื้อหาพอดีจอหรือไม่ ----------
+   บางเบราว์เซอร์ (เช่น เบราว์เซอร์ใน LINE) ขยายตัวอักษรเอง
+   ทำให้เนื้อหาสูงเกินจอที่ล็อกไว้และวาดทับกัน — ถ้าตรวจพบว่า
+   สูงเกินจอ ให้ปลดล็อกเป็นโหมดเลื่อนขึ้นลงโดยอัตโนมัติ */
+const appEl=document.querySelector(".app");
+function fitCheck(){
+  document.body.classList.remove("autoscroll");
+  if(appEl.scrollHeight>window.innerHeight+4){
+    document.body.classList.add("autoscroll");
+  }
+}
+fitCheck();
+window.addEventListener("resize",fitCheck);
+window.addEventListener("orientationchange",fitCheck);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitCheck);
+window.addEventListener("load",fitCheck);
 
 /* ---------- แสดงเวอร์ชัน + ตรวจเวอร์ชันใหม่ ---------- */
 (function(){
