@@ -292,7 +292,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 13;
-const APP_VERSION = "1.6";
+const APP_VERSION = "1.7";
 const APP_UPDATED = "2026-07-19";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
@@ -362,8 +362,9 @@ function pick(i){
   else if(selB===null){if(i!==selA)selB=i;}
   else{selA=i;selB=null;}
   update();
+  fitCheck();
 }
-document.getElementById("clear").addEventListener("click",()=>{selA=null;selB=null;update();});
+document.getElementById("clear").addEventListener("click",()=>{selA=null;selB=null;update();fitCheck();});
 
 baseFare.addEventListener("input",()=>{
   const v=parseInt(baseFare.value,10);
@@ -425,15 +426,15 @@ drawLegend();
 update();
 
 /* ---------- ตรวจว่าเนื้อหาพอดีจอหรือไม่ ----------
-   บางเบราว์เซอร์ (เช่น เบราว์เซอร์ใน LINE) ขยายตัวอักษรเอง
-   ทำให้เนื้อหาสูงเกินจอที่ล็อกไว้และวาดทับกัน — ถ้าตรวจพบว่า
-   สูงเกินจอ ให้ปลดล็อกเป็นโหมดเลื่อนขึ้นลงโดยอัตโนมัติ */
+   วัดจากความสูงธรรมชาติของเนื้อหา (โหมดเลื่อน) ก่อน แล้วจึงตัดสินใจ:
+   พอดีจอ → ล็อกจอเดียว / ไม่พอดี (เช่น เบราว์เซอร์ใน LINE ขยายฟอนต์
+   หรือการ์ดผลลัพธ์สูงขึ้นเมื่อชื่อท่ายาว) → คงโหมดเลื่อนไว้ */
 const appEl=document.querySelector(".app");
 function fitCheck(){
-  document.body.classList.remove("autoscroll");
-  if(appEl.scrollHeight>window.innerHeight+4){
-    document.body.classList.add("autoscroll");
-  }
+  const body=document.body;
+  body.classList.add("autoscroll");      /* จัดวางแบบความสูงธรรมชาติ */
+  const need=appEl.scrollHeight;         /* ความสูงที่ต้องใช้จริง */
+  if(need<=window.innerHeight+4)body.classList.remove("autoscroll");
 }
 fitCheck();
 window.addEventListener("resize",fitCheck);
