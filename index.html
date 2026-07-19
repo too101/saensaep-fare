@@ -289,7 +289,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 13;
-const APP_VERSION = "1.3";
+const APP_VERSION = "1.4";
 const APP_UPDATED = "2026-07-19";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
@@ -427,10 +427,17 @@ update();
   document.getElementById("ver").textContent="เวอร์ชัน "+APP_VERSION+" · อัปเดต "+thDate;
   const bar=document.getElementById("updateBar");
   let serverVer=null;
-  /* ดึงไฟล์ตัวเองจากเซิร์ฟเวอร์แบบข้ามแคช แล้วเทียบเลขเวอร์ชันตรง ๆ
-     ขึ้นแถบเฉพาะเมื่อ (1) เวอร์ชันบนเซิร์ฟเวอร์ต่างจากที่รันอยู่ และ
-     (2) ผู้ใช้ยังไม่เคยกดรีเฟรชสำหรับเวอร์ชันนั้น (กันแถบค้างระหว่าง
-     รอ CDN ของ GitHub Pages เผยแพร่ไฟล์ใหม่) */
+  /* เทียบเลขเวอร์ชันแบบตัวเลข: แจ้งเฉพาะเมื่อฝั่งเซิร์ฟเวอร์ "ใหม่กว่า"
+     เท่านั้น — ถ้าเซิร์ฟเวอร์ (CDN) ยังตอบด้วยไฟล์เก่ากว่าที่รันอยู่
+     (เกิดได้ช่วงสั้น ๆ หลังอัปโหลด) จะไม่ขึ้นแถบ */
+  const newer=(a,b)=>{ /* true ถ้า a ใหม่กว่า b */
+    const pa=String(a).split(".").map(Number),pb=String(b).split(".").map(Number);
+    for(let i=0;i<Math.max(pa.length,pb.length);i++){
+      const x=pa[i]||0,y=pb[i]||0;
+      if(x!==y)return x>y;
+    }
+    return false;
+  };
   fetch(location.pathname+"?nocache="+Date.now(),{cache:"no-store"})
     .then(r=>r.ok?r.text():null)
     .then(html=>{
@@ -440,7 +447,7 @@ update();
       serverVer=m[1];
       let dismissed=null;
       try{dismissed=localStorage.getItem("dismissVer");}catch(e){}
-      if(serverVer!==APP_VERSION&&serverVer!==dismissed)bar.hidden=false;
+      if(newer(serverVer,APP_VERSION)&&serverVer!==dismissed)bar.hidden=false;
     })
     .catch(()=>{});
   bar.addEventListener("click",()=>{
