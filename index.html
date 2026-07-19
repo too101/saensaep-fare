@@ -289,9 +289,8 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 13;
-const APP_VERSION = "1.1";
+const APP_VERSION = "1.2";
 const APP_UPDATED = "2026-07-19";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
-const REPO = "too101/saensaep-fare";
 
 const piers=[
 ["ผ่านฟ้าลีลาศ",""],["ตลาดโบ๊เบ๊",""],["สะพานเจริญผล",""],["สะพานหัวช้าง",""],["ประตูน้ำ"," (Center Pier)"],
@@ -427,13 +426,15 @@ update();
   const thDate=new Date(APP_UPDATED+"T00:00:00").toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"numeric"});
   document.getElementById("ver").textContent="เวอร์ชัน "+APP_VERSION+" · อัปเดต "+thDate;
   const bar=document.getElementById("updateBar");
-  fetch("https://api.github.com/repos/"+REPO+"/commits/main",{cache:"no-store"})
-    .then(r=>r.ok?r.json():null)
-    .then(j=>{
-      if(!j)return;
-      const latest=new Date(j.commit.committer.date);
-      const mine=new Date(APP_UPDATED+"T23:59:59");
-      if(latest>mine)bar.hidden=false;
+  /* ดึงไฟล์ตัวเองจากเซิร์ฟเวอร์แบบข้ามแคช แล้วเทียบเลขเวอร์ชันตรง ๆ
+     - เวอร์ชันตรงกัน = ผู้ใช้ถือหน้าล่าสุดเท่าที่เซิร์ฟเวอร์มี → ไม่ขึ้นแถบ
+     - เวอร์ชันต่างกัน = เบราว์เซอร์แคชหน้าเก่าไว้ → ขึ้นแถบให้รีเฟรช */
+  fetch(location.pathname+"?nocache="+Date.now(),{cache:"no-store"})
+    .then(r=>r.ok?r.text():null)
+    .then(html=>{
+      if(!html)return;
+      const m=html.match(/APP_VERSION\s*=\s*"([^"]+)"/);
+      if(m&&m[1]!==APP_VERSION)bar.hidden=false;
     })
     .catch(()=>{});
   bar.addEventListener("click",()=>{
