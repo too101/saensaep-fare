@@ -277,7 +277,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง ·
   <a class="src" href="https://github.com/too101/saensaep-fare/archive/refs/heads/main.zip">ดาวน์โหลดซอร์สโค้ด</a> ·
   <a class="src" href="https://github.com/too101/saensaep-fare">ดูโค้ดบน GitHub</a> ·
-  <a class="src" href="mailto:too101@gmail.com?subject=%E0%B9%80%E0%B8%A7%E0%B9%87%E0%B8%9A%E0%B8%84%E0%B9%88%E0%B8%B2%E0%B9%82%E0%B8%94%E0%B8%A2%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B9%80%E0%B8%A3%E0%B8%B7%E0%B8%AD%E0%B8%84%E0%B8%A5%E0%B8%AD%E0%B8%87%E0%B9%81%E0%B8%AA%E0%B8%99%E0%B9%81%E0%B8%AA%E0%B8%9A">ติดต่อผู้พัฒนา</a>
+  <a class="src" id="contactLink" href="mailto:too101@gmail.com">ติดต่อผู้พัฒนา</a>
 </p>
 </div>
 
@@ -291,9 +291,9 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    ระบบจะแสดงเวอร์ชันในหน้าเว็บ และใช้วันที่เทียบกับ commit ล่าสุด
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
-const BASE_FARE = 13;
-const APP_VERSION = "1.9";
-const APP_UPDATED = "2026-07-19";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
+const BASE_FARE = 14;
+const APP_VERSION = "2.1";
+const APP_UPDATED = "2026-07-27";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
 ["ผ่านฟ้าลีลาศ",""],["ตลาดโบ๊เบ๊",""],["สะพานเจริญผล",""],["สะพานหัวช้าง",""],["ประตูน้ำ"," (Center Pier)"],
@@ -446,6 +446,13 @@ window.addEventListener("load",fitCheck);
 (function(){
   const thDate=new Date(APP_UPDATED+"T00:00:00").toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"numeric"});
   document.getElementById("ver").textContent="เวอร์ชัน "+APP_VERSION+" · อัปเดต "+thDate;
+  /* ใส่รายละเอียดเวอร์ชันในอีเมลติดต่อ เพื่อให้รู้ว่าผู้ใช้แจ้งจากเวอร์ชันใด */
+  const contact=document.getElementById("contactLink");
+  if(contact){
+    const subject="ค่าโดยสารเรือคลองแสนแสบ (เวอร์ชัน "+APP_VERSION+")";
+    const body="\n\n----------\nเวอร์ชัน: "+APP_VERSION+"\nอัปเดตล่าสุด: "+thDate+"\nหน้าเว็บ: "+location.href;
+    contact.href="mailto:too101@gmail.com?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
+  }
   const bar=document.getElementById("updateBar");
   let serverVer=null;
   /* เทียบเลขเวอร์ชันแบบตัวเลข: แจ้งเฉพาะเมื่อฝั่งเซิร์ฟเวอร์ "ใหม่กว่า"
