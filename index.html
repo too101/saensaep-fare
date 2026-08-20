@@ -44,6 +44,14 @@ body{
 }
 .app{max-width:920px;margin:0 auto;padding:0 20px 48px}
 
+.head-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#langToggle{
+  flex:none;background:#fff;border:1.5px solid var(--line);border-radius:99px;
+  padding:6px 16px;font:inherit;font-size:13px;font-weight:600;
+  color:var(--water);cursor:pointer
+}
+#langToggle:hover{border-color:var(--water)}
+
 header{padding:34px 0 6px}
 .eyebrow{
   display:inline-flex;align-items:center;gap:8px;
@@ -188,6 +196,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   body.scrollable .app,body.autoscroll .app{height:auto}
   body.autoscroll .route{flex:none}
   body.autoscroll .route .col{grid-auto-rows:auto}
+  #langToggle{padding:4px 12px;font-size:11.5px}
   header{padding:12px 0 0}
   .eyebrow{font-size:15px}
   .eyebrow::before{width:20px;height:3px}
@@ -205,7 +214,6 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   .route .col::before{left:9px}
   .pier{font-size:11.5px;gap:5px;padding:6px 2px 6px 0;border-radius:7px}
   .pier .dot{width:10px;height:10px;border-width:2.5px;margin-left:3px}
-  .pier .paren{display:none}
   .pier .nm{line-height:1.2}
   .pier .fee{font-size:10.5px}
   .legend{display:none}
@@ -231,22 +239,25 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
 <body>
 <div class="app">
 <header>
-  <span class="eyebrow">ค่าโดยสารเรือคลองแสนแสบ</span>
-  <p class="sub">แตะจุดบนแผนผังสองจุดเพื่อเลือกท่าต้นทางและปลายทาง ระบบจะแสดงค่าโดยสารทันที</p>
+  <div class="head-row">
+    <span class="eyebrow" id="eyebrow">ค่าโดยสารเรือคลองแสนแสบ</span>
+    <button id="langToggle" type="button">English</button>
+  </div>
+  <p class="sub" id="subText">แตะจุดบนแผนผังสองจุดเพื่อเลือกท่าต้นทางและปลายทาง ระบบจะแสดงค่าโดยสารทันที</p>
 </header>
 
 <div class="result">
   <div class="fare-badge" id="badge" role="status" aria-live="polite">
     <span class="num" id="fareNum">–</span>
-    <span class="unit">บาท</span>
+    <span class="unit" id="unitText">บาท</span>
   </div>
   <p class="result-detail" id="detail"></p>
   <button id="clear" type="button">เริ่มใหม่</button>
 </div>
 
 <div class="route-head">
-  <h2>แผนผังเส้นทาง 27 ท่า</h2>
-  <span class="hint">แตะจุดแรก = ต้นทาง · จุดที่สอง = ปลายทาง</span>
+  <h2 id="routeH2">แผนผังเส้นทาง 27 ท่า</h2>
+  <span class="hint" id="hintText">แตะจุดแรก = ต้นทาง · จุดที่สอง = ปลายทาง</span>
 </div>
 <div class="route" id="route">
   <div class="col" id="colA"></div>
@@ -257,14 +268,14 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
 
 <div class="foot">
 <details class="settings" id="settings">
-  <summary>ปรับค่าโดยสารเริ่มต้น <span id="baseTag"></span></summary>
+  <summary><span id="settingsSummaryText">ปรับค่าโดยสารเริ่มต้น</span> <span id="baseTag"></span></summary>
   <div class="settings-body">
     <div class="field">
-      <label for="baseFare">ค่าโดยสารเริ่มต้น (ระยะใกล้สุด, บาท)</label>
+      <label for="baseFare" id="baseFareLabel">ค่าโดยสารเริ่มต้น (ระยะใกล้สุด, บาท)</label>
       <input type="number" id="baseFare" min="1" max="99" step="1" inputmode="numeric">
     </div>
     <button id="resetBase" type="button">คืนค่าเดิม</button>
-    <p class="settings-note">เมื่ออัตราค่าโดยสารปรับขึ้น ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตามโดยส่วนต่างระหว่างระยะคงเดิม (+2 บาทต่อขั้น)</p>
+    <p class="settings-note" id="settingsNote">เมื่ออัตราค่าโดยสารปรับขึ้น ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตามโดยส่วนต่างระหว่างระยะคงเดิม (+2 บาทต่อขั้น)</p>
   </div>
 </details>
 <button id="srcToggle" type="button">ดาวน์โหลดซอร์สโค้ด ▾</button>
@@ -273,9 +284,9 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
 <button id="updateBar" type="button" hidden>มีเวอร์ชันใหม่กว่านี้ · แตะเพื่อโหลดหน้าล่าสุด ⟳</button>
 
 <p class="note">
-  ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง ·
-  <a class="src" href="https://github.com/too101/saensaep-fare/archive/refs/heads/main.zip">ดาวน์โหลดซอร์สโค้ด</a> ·
-  <a class="src" href="https://github.com/too101/saensaep-fare">ดูโค้ดบน GitHub</a> ·
+  <span id="notePrefix">ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง</span> ·
+  <a class="src" id="srcLink1" href="https://github.com/too101/saensaep-fare/archive/refs/heads/main.zip">ดาวน์โหลดซอร์สโค้ด</a> ·
+  <a class="src" id="srcLink2" href="https://github.com/too101/saensaep-fare">ดูโค้ดบน GitHub</a> ·
   <a class="src" id="contactLink" href="mailto:too101@gmail.com">ติดต่อผู้พัฒนา</a>
 </p>
 </div>
@@ -291,43 +302,114 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 15;
-const APP_VERSION = "2.6";
-const APP_UPDATED = "2026-08-16";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
+const APP_VERSION = "2.8";
+const APP_UPDATED = "2026-08-20";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
-["ผ่านฟ้าลีลาศ",""],["ตลาดโบ๊เบ๊",""],["สะพานเจริญผล",""],["สะพานหัวช้าง",""],["ประตูน้ำ"," (Center Pier)"],
-["ชิดลม",""],["สะพานวิทยุ",""],["นานาเหนือ",""],["นานาชาติ",""],["อโศก-เพชรบุรี"," (MRT สายสีน้ำเงิน)"],
-["มศว ประสานมิตร",""],["อิตัลไทย",""],["สุเหร่าบ้านดอน",""],["ทองหล่อ",""],["ชาญอิสระ",""],
-["โรงเรียนวิจิตร",""],["สะพานคลองตัน",""],["รามหนึ่ง"," (Airport Link)"],["เดอะมอลล์รามคำแหง"," (เดอะมอลล์ 3)"],["รามคำแหง 29",""],
-["วัดเทพลีลา",""],["ม.รามคำแหง"," (ซ.51/2)"],["สะพานมิตรมหาดไทย"," (ซ.65)"],["วัดกลาง"," (ซ.81)"],["เดอะมอลล์ไลฟ์สโตร์บางกะปิ",""],
-["บางกะปิ / ตลาดบางกะปิ",""],["วัดศรีบุญเรือง",""]];
-const full=p=>p[0]+p[1];
+{th:"ผ่านฟ้าลีลาศ",en:"Phan Fa Lilat"},{th:"ตลาดโบ๊เบ๊",en:"Talad Bobae"},{th:"สะพานเจริญผล",en:"Sapan Charoenphol"},{th:"สะพานหัวช้าง",en:"Sapan Hua Chang"},{th:"ประตูน้ำ",en:"Pratunam"},
+{th:"ชิดลม",en:"Chidlom"},{th:"สะพานวิทยุ",en:"Wireless"},{th:"นานาเหนือ",en:"Nana Nua"},{th:"นานาชาติ",en:"Nanachard"},{th:"อโศก",en:"Asoke"},
+{th:"มศว. ประสานมิตร",en:"Prasanmit"},{th:"อิตัลไทย",en:"Ital Thai"},{th:"สุเหร่าบ้านดอน",en:"Baandon Mosque"},{th:"ซอยทองหล่อ",en:"Soi Thonglor"},{th:"ชาญอิสระ",en:"Charn Issara"},
+{th:"ร.ร. วิจิตร",en:"Vitjittra School"},{th:"สะพานคลองตัน",en:"Sapan Klongtun"},{th:"รามหนึ่ง",en:"Ramnueng"},{th:"เดอะมอลล์ 3",en:"The Mall Ram 3"},{th:"รามคำแหง 29",en:"Ramkhamhaeng 29"},
+{th:"วัดเทพลีลา",en:"Wat Thepleela"},{th:"ม.รามคำแหง 53",en:"Ramkhamhaeng 53"},{th:"สะพานมิตรมหาดไทย",en:"Sapan Mit Mahadthai"},{th:"วัดกลาง",en:"Wat Klang"},{th:"เดอะมอลล์บางกะปิ",en:"The Mall Bangkapi"},
+{th:"บางกะปิ",en:"Bangkapi"},{th:"วัดศรีบุญเรือง",en:"Wat Sriboonreung"}];
+const full=(p,lang)=>lang==="en"?p.en:p.th;
 
-const rle=["13x1","13x2","13x3","15x1,13x3","15x3,13x2","15x3,13x3",
-"17x1,15x4,13x2","17x2,15x3,13x3","17x2,15x4,13x3",
-"17x4,15x3,13x3","17x5,15x3,13x3","17x7,15x3,13x2",
-"19x1,17x6,15x5,13x1","19x2,17x7,15x3,13x2","19x5,17x5,15x2,13x3",
-"19x5,17x7,15x2,13x2","19x6,17x6,15x2,13x3",
-"21x2,19x5,17x6,15x3,13x2","21x5,19x5,17x5,15x3,13x1","21x6,19x4,17x6,15x2,13x2",
-"21x7,19x5,17x4,15x3,13x2","23x1,21x6,19x5,17x6,15x2,13x2","23x4,21x6,19x4,17x5,15x3,13x1",
-"23x5,21x7,19x4,17x4,15x3,13x1","23x6,21x6,19x4,17x4,15x3,13x2","23x7,21x6,19x3,17x5,15x2,13x3"];
+/* ============================================================
+   ข้อความสองภาษา — หน้าเว็บเปิดเป็นภาษาไทยเสมอทุกครั้ง (ไม่จำค่า)
+   ============================================================ */
+let lang="th";
+const T={
+  th:{
+    eyebrow:"ค่าโดยสารเรือคลองแสนแสบ",
+    sub:"แตะจุดบนแผนผังสองจุดเพื่อเลือกท่าต้นทางและปลายทาง ระบบจะแสดงค่าโดยสารทันที",
+    unit:"บาท",
+    clear:"เริ่มใหม่",
+    routeH2:"แผนผังเส้นทาง 27 ท่า",
+    hint:"แตะจุดแรก = ต้นทาง · จุดที่สอง = ปลายทาง",
+    origin:"ต้นทาง",
+    settingsSummary:"ปรับค่าโดยสารเริ่มต้น",
+    baseFareLabel:"ค่าโดยสารเริ่มต้น (ระยะใกล้สุด, บาท)",
+    resetBase:v=>"คืนค่าเดิม ("+v+" บาท)",
+    settingsNote:"เมื่ออัตราค่าโดยสารปรับขึ้น ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตามโดยส่วนต่างระหว่างระยะคงเดิม (+2 บาทต่อขั้น)",
+    srcClosed:"ดาวน์โหลดซอร์สโค้ด ▾",
+    srcOpen:"ซ่อนลิงก์ซอร์สโค้ด ▴",
+    updateBar:"มีเวอร์ชันใหม่กว่านี้ · แตะเพื่อโหลดหน้าล่าสุด ⟳",
+    notePrefix:"ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง",
+    srcLink1:"ดาวน์โหลดซอร์สโค้ด",
+    srcLink2:"ดูโค้ดบน GitHub",
+    srcLink3:"ติดต่อผู้พัฒนา",
+    verLabel:(v,dt)=>"เวอร์ชัน "+v+" · อัปเดต "+dt,
+    baseTag:v=>"· เริ่มต้น "+v+" บาท",
+    detailEmpty:"แตะจุดบนแผนผังเพื่อเลือก<strong>ท่าต้นทาง</strong>",
+    detailOriginOnly:a=>'<strong>'+a+'</strong> → ?<br>แตะอีกจุดเพื่อเลือก<strong>ท่าปลายทาง</strong> หรือดูราคาท้ายชื่อท่า',
+    detailBoth:(a,b,n,stops)=>'<strong>'+a+'</strong> → <strong>'+b+'</strong><br>ระยะ '+n+' ช่วงท่า'+(stops>0?' · ผ่าน '+stops+' ท่า':' (ท่าถัดไป)'),
+    legendSuffix:" บาท",
+    dateLocale:"th-TH",
+    langBtn:"English"
+  },
+  en:{
+    eyebrow:"Khlong Saen Saep Boat Fare",
+    sub:"Tap two points on the map to pick your origin and destination pier — the fare shows instantly.",
+    unit:"Baht",
+    clear:"Reset",
+    routeH2:"Route Map (27 Piers)",
+    hint:"Tap 1st point = origin · 2nd point = destination",
+    origin:"Origin",
+    settingsSummary:"Adjust starting fare",
+    baseFareLabel:"Starting fare (shortest distance, Baht)",
+    resetBase:v=>"Reset to default ("+v+" Baht)",
+    settingsNote:"When the fare goes up, just change the starting fare — every other tier shifts with it, keeping the same +2 Baht step between tiers.",
+    srcClosed:"Download source code ▾",
+    srcOpen:"Hide source links ▴",
+    updateBar:"A newer version is available · tap to reload ⟳",
+    notePrefix:"Fares are transcribed from the operator's official rate table and may change — please check the notice board at the pier.",
+    srcLink1:"Download source code",
+    srcLink2:"View code on GitHub",
+    srcLink3:"Contact the developer",
+    verLabel:(v,dt)=>"Version "+v+" · Updated "+dt,
+    baseTag:v=>"· Starting "+v+" Baht",
+    detailEmpty:"Tap a point on the map to pick your <strong>origin pier</strong>",
+    detailOriginOnly:a=>'<strong>'+a+'</strong> → ?<br>Tap another point to pick your <strong>destination pier</strong>, or check the fare next to each pier name',
+    detailBoth:(a,b,n,stops)=>'<strong>'+a+'</strong> → <strong>'+b+'</strong><br>'+n+' pier span'+(n>1?'s':'')+(stops>0?' · passing '+stops+' pier'+(stops>1?'s':''):' (next pier)'),
+    legendSuffix:" Baht",
+    dateLocale:"en-GB",
+    langBtn:"ไทย"
+  }
+};
+
+const rle=["0x1","0x2","0x3","2x1,0x3","2x3,0x2","2x3,0x3",
+"4x1,2x4,0x2","4x2,2x3,0x3","4x2,2x4,0x3",
+"4x4,2x3,0x3","4x5,2x3,0x3","4x7,2x3,0x2",
+"6x1,4x6,2x5,0x1","6x2,4x7,2x3,0x2","6x5,4x5,2x2,0x3",
+"6x5,4x7,2x2,0x2","6x6,4x6,2x2,0x3",
+"8x2,6x5,4x6,2x3,0x2","8x5,6x5,4x5,2x3,0x1","8x6,6x4,4x6,2x2,0x2",
+"8x7,6x5,4x4,2x3,0x2","10x1,8x6,6x5,4x6,2x2,0x2","10x4,8x6,6x4,4x5,2x3,0x1",
+"10x5,8x7,6x4,4x4,2x3,0x1","10x6,8x6,6x4,4x4,2x3,0x2","10x7,8x6,6x3,4x5,2x2,0x3"];
 const M=rle.map(r=>r.split(",").flatMap(p=>{const[v,n]=p.split("x").map(Number);return Array(n).fill(v)}));
 const tier=(a,b)=>a===b?null:M[Math.max(a,b)-1][Math.min(a,b)];
 
 let base=BASE_FARE;
-const adj=t=>t===null?null:t+(base-13); /* 13 = ฐานของตารางระยะภายใน ไม่ต้องแก้ */
+const adj=t=>t===null?null:t+base; /* rle เก็บเป็น "ส่วนต่างจากราคาเริ่มต้น" (0,2,4,6,8,10) ราคาจริง = เริ่มต้น + ส่วนต่าง */
 
-const tiers={13:["--f13","--f13t"],15:["--f15","--f15t"],17:["--f17","--f17t"],19:["--f19","--f19t"],21:["--f21","--f21t"],23:["--f23","--f23t"]};
+const tiers={0:["--f13","--f13t"],2:["--f15","--f15t"],4:["--f17","--f17t"],6:["--f19","--f19t"],8:["--f21","--f21t"],10:["--f23","--f23t"]};
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
 const colA=document.getElementById("colA"),colB=document.getElementById("colB"),
 badge=document.getElementById("badge"),fareNum=document.getElementById("fareNum"),
 detail=document.getElementById("detail"),legend=document.getElementById("legend"),
 baseFare=document.getElementById("baseFare"),baseTag=document.getElementById("baseTag"),
-settings=document.getElementById("settings");
+settings=document.getElementById("settings"),
+eyebrowEl=document.getElementById("eyebrow"),subEl=document.getElementById("subText"),
+unitEl=document.getElementById("unitText"),clearBtn=document.getElementById("clear"),
+routeH2El=document.getElementById("routeH2"),hintEl=document.getElementById("hintText"),
+settingsSummaryEl=document.getElementById("settingsSummaryText"),baseFareLabelEl=document.getElementById("baseFareLabel"),
+resetBaseBtn=document.getElementById("resetBase"),settingsNoteEl=document.getElementById("settingsNote"),
+notePrefixEl=document.getElementById("notePrefix"),srcLink1El=document.getElementById("srcLink1"),
+srcLink2El=document.getElementById("srcLink2"),contactLinkEl=document.getElementById("contactLink"),
+langToggleBtn=document.getElementById("langToggle"),verEl=document.getElementById("ver"),
+updateBarEl=document.getElementById("updateBar");
 
 baseFare.value=BASE_FARE;
-document.getElementById("resetBase").textContent="คืนค่าเดิม ("+BASE_FARE+" บาท)";
 
 let selA=null,selB=null;
 
@@ -336,16 +418,21 @@ const btns=[];
    dataset.i ยังคงเป็นเลขท่าเดิม (0=ผ่านฟ้าลีลาศ...26=วัดศรีบุญเรือง) เพื่อไม่ให้กระทบสูตรราคา */
 const displayOrder=piers.map((_,i)=>i).reverse();
 displayOrder.forEach((i,pos)=>{
-  const p=piers[i];
   const b=document.createElement("button");
-  b.type="button";b.className="pier";b.dataset.i=i;b.title=full(p);
-  b.innerHTML='<span class="dot"></span>'+
-    '<span class="nm">'+p[0]+'<span class="paren">'+p[1]+'</span></span>'+
-    '<span class="fee"></span>';
+  b.type="button";b.className="pier";b.dataset.i=i;
+  b.innerHTML='<span class="dot"></span><span class="nm"></span><span class="fee"></span>';
   b.addEventListener("click",()=>pick(i));
   (pos<14?colA:colB).appendChild(b);
   btns.push(b);
 });
+
+function renderPierLabels(){
+  btns.forEach(el=>{
+    const i=+el.dataset.i, p=piers[i], name=full(p,lang);
+    el.title=name;
+    el.querySelector(".nm").textContent=name;
+  });
+}
 
 function drawLegend(){
   legend.innerHTML="";
@@ -354,10 +441,10 @@ function drawLegend(){
     c.className="chip";
     c.style.background=css(tiers[f][0]);
     c.style.color=css(tiers[f][1]);
-    c.textContent=adj(+f)+" บาท";
+    c.textContent=adj(+f)+T[lang].legendSuffix;
     legend.appendChild(c);
   });
-  baseTag.textContent=base!==BASE_FARE?"· เริ่มต้น "+base+" บาท":"";
+  baseTag.textContent=base!==BASE_FARE?T[lang].baseTag(base):"";
 }
 
 function pick(i){
@@ -367,13 +454,13 @@ function pick(i){
   update();
   fitCheck();
 }
-document.getElementById("clear").addEventListener("click",()=>{selA=null;selB=null;update();fitCheck();});
+clearBtn.addEventListener("click",()=>{selA=null;selB=null;update();fitCheck();});
 
 baseFare.addEventListener("input",()=>{
   const v=parseInt(baseFare.value,10);
   if(!isNaN(v)&&v>=1&&v<=99){base=v;drawLegend();update();}
 });
-document.getElementById("resetBase").addEventListener("click",()=>{
+resetBaseBtn.addEventListener("click",()=>{
   base=BASE_FARE;baseFare.value=BASE_FARE;drawLegend();update();
 });
 /* เปิดแผงปรับราคา หรือกดลิงก์ซอร์สโค้ด = อนุญาตให้เลื่อนหน้าได้ */
@@ -388,7 +475,7 @@ settings.addEventListener("toggle",()=>{
 });
 srcToggle.addEventListener("click",()=>{
   srcOpen=!srcOpen;
-  srcToggle.textContent=srcOpen?"ซ่อนลิงก์ซอร์สโค้ด ▴":"ดาวน์โหลดซอร์สโค้ด ▾";
+  srcToggle.textContent=srcOpen?T[lang].srcOpen:T[lang].srcClosed;
   syncScroll();
   if(srcOpen)setTimeout(()=>note.scrollIntoView({behavior:"smooth",block:"end"}),50);
 });
@@ -401,32 +488,61 @@ function update(){
     el.classList.toggle("between",a!==null&&b!==null&&i>Math.min(a,b)&&i<Math.max(a,b));
     const fee=el.querySelector(".fee");
     if(a===null){fee.textContent="";el.classList.remove("show-fee");}
-    else if(i===a){fee.textContent="ต้นทาง";el.classList.add("show-fee");}
-    else{fee.textContent=adj(tier(a,i))+" ฿";el.classList.add("show-fee");}
+    else if(i===a){fee.textContent=T[lang].origin;el.classList.add("show-fee");}
+    else{fee.textContent=adj(tier(a,i));el.classList.add("show-fee");}
   });
 
   if(a===null){
     fareNum.textContent="–";
-    detail.innerHTML="แตะจุดบนแผนผังเพื่อเลือก<strong>ท่าต้นทาง</strong>";
+    detail.innerHTML=T[lang].detailEmpty;
     badge.style.background=css("--f13");badge.style.color=css("--f13t");
     return;
   }
   if(b===null){
     fareNum.textContent="–";
-    detail.innerHTML='<strong>'+full(piers[a])+'</strong> → ?<br>แตะอีกจุดเพื่อเลือก<strong>ท่าปลายทาง</strong> หรือดูราคาท้ายชื่อท่า';
+    detail.innerHTML=T[lang].detailOriginOnly(full(piers[a],lang));
     badge.style.background=css("--f13");badge.style.color=css("--f13t");
     return;
   }
   const t=tier(a,b),f=adj(t);
   const lo=Math.min(a,b),hi=Math.max(a,b),stops=hi-lo-1;
   fareNum.textContent=f;
-  detail.innerHTML='<strong>'+full(piers[a])+'</strong> → <strong>'+full(piers[b])+'</strong><br>ระยะ '+(hi-lo)+' ช่วงท่า'+(stops>0?' · ผ่าน '+stops+' ท่า':' (ท่าถัดไป)');
+  detail.innerHTML=T[lang].detailBoth(full(piers[a],lang),full(piers[b],lang),hi-lo,stops);
   badge.style.background=css(tiers[t][0]);
   badge.style.color=css(tiers[t][1]);
 }
 
-drawLegend();
-update();
+/* ---------- สลับภาษา: ทาน้ำหนักข้อความคงที่และเรียก render ที่เกี่ยวข้องใหม่ ---------- */
+function applyLang(){
+  document.documentElement.lang=lang;
+  const t=T[lang];
+  eyebrowEl.textContent=t.eyebrow;
+  subEl.textContent=t.sub;
+  unitEl.textContent=t.unit;
+  clearBtn.textContent=t.clear;
+  routeH2El.textContent=t.routeH2;
+  hintEl.textContent=t.hint;
+  settingsSummaryEl.textContent=t.settingsSummary;
+  baseFareLabelEl.textContent=t.baseFareLabel;
+  resetBaseBtn.textContent=t.resetBase(BASE_FARE);
+  settingsNoteEl.textContent=t.settingsNote;
+  notePrefixEl.textContent=t.notePrefix;
+  srcLink1El.textContent=t.srcLink1;
+  srcLink2El.textContent=t.srcLink2;
+  contactLinkEl.textContent=t.srcLink3;
+  srcToggle.textContent=srcOpen?t.srcOpen:t.srcClosed;
+  updateBarEl.textContent=t.updateBar;
+  langToggleBtn.textContent=t.langBtn;
+  renderPierLabels();
+  renderVersionInfo();
+  drawLegend();
+  update();
+  fitCheck();
+}
+langToggleBtn.addEventListener("click",()=>{
+  lang=lang==="th"?"en":"th";
+  applyLang();
+});
 
 /* ---------- ตรวจว่าเนื้อหาพอดีจอหรือไม่ ----------
    วัดจากความสูงธรรมชาติของเนื้อหา (โหมดเลื่อน) ก่อน แล้วจึงตัดสินใจ:
@@ -439,16 +555,20 @@ function fitCheck(){
   const need=appEl.scrollHeight;         /* ความสูงที่ต้องใช้จริง */
   if(need<=window.innerHeight+4)body.classList.remove("autoscroll");
 }
-fitCheck();
+applyLang();      /* เรียกครั้งแรก: ตั้งค่าข้อความ+ป้ายท่า+ราคา แล้ว fitCheck() ในตัว */
 window.addEventListener("resize",fitCheck);
 window.addEventListener("orientationchange",fitCheck);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitCheck);
 window.addEventListener("load",fitCheck);
 
+function renderVersionInfo(){
+  const dt=new Date(APP_UPDATED+"T00:00:00").toLocaleDateString(T[lang].dateLocale,{day:"numeric",month:"short",year:"numeric"});
+  verEl.textContent=T[lang].verLabel(APP_VERSION,dt);
+}
+
 /* ---------- แสดงเวอร์ชัน + ตรวจเวอร์ชันใหม่ ---------- */
 (function(){
   const thDate=new Date(APP_UPDATED+"T00:00:00").toLocaleDateString("th-TH",{day:"numeric",month:"short",year:"numeric"});
-  document.getElementById("ver").textContent="เวอร์ชัน "+APP_VERSION+" · อัปเดต "+thDate;
   /* ใส่รายละเอียดเวอร์ชันในอีเมลติดต่อ เพื่อให้รู้ว่าผู้ใช้แจ้งจากเวอร์ชันใด */
   const contact=document.getElementById("contactLink");
   if(contact){
