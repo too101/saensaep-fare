@@ -14,6 +14,15 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="th_TH">
 <meta name="twitter:card" content="summary_large_image">
+
+<!-- เพิ่มไปยังหน้าจอหลัก (Add to Home Screen) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A4A3B">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ค่าเรือแสนแสบ">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -163,6 +172,18 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px
 }
 #srcToggle:hover{text-decoration-color:var(--water)}
+#installBtn{
+  order:-1;
+  background:var(--water);border:0;border-radius:99px;
+  padding:7px 16px;cursor:pointer;
+  font:inherit;font-size:12.5px;font-weight:600;color:#fff
+}
+#installBtn:hover{background:var(--water-deep)}
+.install-note{
+  margin-top:10px;padding:12px 14px;border-radius:12px;
+  background:#F6FAF8;border:1px solid var(--line);
+  font-size:13px;color:var(--ink-soft);line-height:1.6
+}
 #ver{
   flex-basis:100%;text-align:right;
   font-size:11px;color:var(--ink-soft);opacity:.75;margin-top:-4px
@@ -213,9 +234,13 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   .pier .fee{font-size:10.5px}
   .legend{display:none}
   .note{display:none}
+  .install-note{display:none}
   body.scrollable .note{display:block}
+  body.scrollable .install-note{display:block}
   .foot{margin-top:8px;align-items:center}
   #srcToggle{display:inline-block;font-size:11.5px}
+  #installBtn{padding:5px 13px;font-size:11px}
+  .install-note{font-size:11.5px;padding:10px 12px;margin-top:8px}
   #ver{font-size:10px;margin-top:-2px}
   #updateBar{margin-top:6px;padding:6px 10px;font-size:11.5px}
   .settings{margin-top:0}
@@ -274,8 +299,10 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   </div>
 </details>
 <button id="srcToggle" type="button">ดาวน์โหลดซอร์สโค้ด ▾</button>
+<button id="installBtn" type="button" hidden>เพิ่มไปยังหน้าจอหลัก</button>
 <span id="ver"></span>
 </div>
+<p class="install-note" id="installNote" hidden></p>
 <button id="updateBar" type="button" hidden>มีเวอร์ชันใหม่กว่านี้ · แตะเพื่อโหลดหน้าล่าสุด ⟳</button>
 
 <p class="note">
@@ -297,8 +324,8 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 15;
-const APP_VERSION = "3.0";
-const APP_UPDATED = "2026-08-20";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
+const APP_VERSION = "3.2";
+const APP_UPDATED = "2026-08-25";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
 {th:"ผ่านฟ้าลีลาศ",en:"Phan Fa Lilat"},{th:"ตลาดโบ๊เบ๊",en:"Talad Bobae"},{th:"สะพานเจริญผล",en:"Sapan Charoenphol"},{th:"สะพานหัวช้าง",en:"Sapan Hua Chang"},{th:"ประตูน้ำ",en:"Pratunam"},
@@ -340,7 +367,9 @@ const T={
     detailBoth:(a,b,n,stops)=>'<strong>'+a+'</strong> → <strong>'+b+'</strong><br>ระยะ '+n+' ช่วงท่า'+(stops>0?' · ผ่าน '+stops+' ท่า':' (ท่าถัดไป)'),
     legendSuffix:" บาท",
     dateLocale:"th-TH",
-    langBtn:"English"
+    langBtn:"English",
+    installBtn:"เพิ่มไปยังหน้าจอหลัก",
+    installNote:'บน iPhone/iPad: กดปุ่มแชร์ <strong>⬆️ Share</strong> แถบด้านล่างของ Safari แล้วเลื่อนหาเมนู <strong>"เพิ่มไปยังหน้าจอโฮม" (Add to Home Screen)</strong>'
   },
   en:{
     eyebrow:"Khlong Saen Saep Boat Fare",
@@ -368,7 +397,9 @@ const T={
     detailBoth:(a,b,n,stops)=>'<strong>'+a+'</strong> → <strong>'+b+'</strong><br>'+n+' pier span'+(n>1?'s':'')+(stops>0?' · passing '+stops+' pier'+(stops>1?'s':''):' (next pier)'),
     legendSuffix:" Baht",
     dateLocale:"en-GB",
-    langBtn:"ไทย"
+    langBtn:"ไทย",
+    installBtn:"Add to Home Screen",
+    installNote:'On iPhone/iPad: tap the <strong>Share</strong> button in Safari\'s toolbar, then scroll down and choose <strong>"Add to Home Screen."</strong>'
   }
 };
 
@@ -460,9 +491,9 @@ resetBaseBtn.addEventListener("click",()=>{
 });
 /* เปิดแผงปรับราคา หรือกดลิงก์ซอร์สโค้ด = อนุญาตให้เลื่อนหน้าได้ */
 const srcToggle=document.getElementById("srcToggle"),note=document.querySelector(".note");
-let srcOpen=false;
+let srcOpen=false, installNoteOpen=false;
 function syncScroll(){
-  document.body.classList.toggle("scrollable",settings.open||srcOpen);
+  document.body.classList.toggle("scrollable",settings.open||srcOpen||installNoteOpen);
 }
 settings.addEventListener("toggle",()=>{
   syncScroll();
@@ -473,6 +504,47 @@ srcToggle.addEventListener("click",()=>{
   srcToggle.textContent=srcOpen?T[lang].srcOpen:T[lang].srcClosed;
   syncScroll();
   if(srcOpen)setTimeout(()=>note.scrollIntoView({behavior:"smooth",block:"end"}),50);
+});
+
+/* ---------- เพิ่มไปยังหน้าจอหลัก (Add to Home Screen) ----------
+   Android/Chrome: ดัก beforeinstallprompt แล้วสั่งเปิด dialog ติดตั้งจริงตอนกดปุ่ม
+   (ต้องมี service worker ที่มี fetch handler เว็บถึงจะเข้าเงื่อนไข ติดตั้งได้ —
+   ตัว sw.js ที่ลงทะเบียนไว้ไม่แคชอะไรเลย ไม่กระทบระบบเช็กเวอร์ชันใหม่)
+   iOS Safari: ไม่รองรับ event นี้เลย ไม่มีทางสั่งเปิด dialog ด้วยโค้ด ต้อง
+   โชว์คำแนะนำให้กดปุ่มแชร์เองแทน */
+const installBtn=document.getElementById("installBtn"),installNote=document.getElementById("installNote");
+let deferredInstallPrompt=null;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
+const isStandalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+if(isIOS&&!isStandalone){
+  installBtn.hidden=false;
+}
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  if(!isStandalone)installBtn.hidden=false;
+});
+window.addEventListener("appinstalled",()=>{
+  installBtn.hidden=true;installNote.hidden=true;installNoteOpen=false;
+  deferredInstallPrompt=null;syncScroll();
+});
+installBtn.addEventListener("click",async()=>{
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    const{outcome}=await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt=null;
+    if(outcome==="accepted")installBtn.hidden=true;
+    return;
+  }
+  installNoteOpen=!installNoteOpen;
+  installNote.hidden=!installNoteOpen;
+  installNote.innerHTML=T[lang].installNote;
+  syncScroll();
+  if(installNoteOpen)setTimeout(()=>installNote.scrollIntoView({behavior:"smooth",block:"nearest"}),50);
 });
 
 function update(){
@@ -528,6 +600,8 @@ function applyLang(){
   srcToggle.textContent=srcOpen?t.srcOpen:t.srcClosed;
   updateBarEl.textContent=t.updateBar;
   langToggleBtn.textContent=t.langBtn;
+  installBtn.textContent=t.installBtn;
+  if(installNoteOpen)installNote.innerHTML=t.installNote;
   renderPierLabels();
   renderVersionInfo();
   drawLegend();
