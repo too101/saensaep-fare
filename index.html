@@ -94,8 +94,8 @@ header{padding:34px 0 6px}
 button:focus-visible,input:focus-visible{outline:3px solid var(--boat);outline-offset:2px}
 
 .route-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:16px 2px 2px}
-h2{font-size:15px;font-weight:600;color:var(--water-deep)}
-.hint{font-size:12.5px;color:var(--ink-soft)}
+h2{font-size:17px;font-weight:600;color:var(--water-deep)}
+.hint{font-size:13.5px;color:var(--ink-soft)}
 
 .route{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px}
 .route .col{position:relative;padding-top:4px;display:grid;grid-auto-rows:min-content}
@@ -105,13 +105,13 @@ h2{font-size:15px;font-weight:600;color:var(--water-deep)}
 }
 .pier{
   position:relative;display:flex;align-items:center;gap:9px;
-  width:100%;text-align:left;padding:5px 6px 5px 2px;
+  width:100%;text-align:left;padding:6px 6px 6px 2px;
   background:none;border:0;border-radius:9px;
-  font:inherit;font-size:14px;color:var(--ink);cursor:pointer
+  font:inherit;font-size:16.5px;color:var(--ink);cursor:pointer
 }
 .pier:hover{background:#E7F0EC}
 .pier .dot{
-  flex:none;width:13px;height:13px;margin-left:4px;border-radius:50%;
+  flex:none;width:14px;height:14px;margin-left:4px;border-radius:50%;
   background:var(--paper);border:3px solid var(--line);
   transition:all .15s ease;position:relative;z-index:1
 }
@@ -125,7 +125,7 @@ h2{font-size:15px;font-weight:600;color:var(--water-deep)}
 .pier.sel .nm{color:var(--boat)}
 .pier.between .dot{border-color:var(--water);background:var(--water)}
 .pier .fee{
-  flex:none;font-size:12px;font-weight:600;text-align:right;
+  flex:none;font-size:14px;font-weight:600;text-align:right;
   color:var(--water);visibility:hidden;font-variant-numeric:tabular-nums
 }
 .pier.show-fee .fee{visibility:visible}
@@ -224,14 +224,14 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   .result-detail{font-size:12px;line-height:1.4}
   #clear{height:30px;padding:0 10px;font-size:11.5px}
   .route-head{margin:8px 2px 0}
-  h2{font-size:13px}
-  .hint{font-size:11px}
+  h2{font-size:15px}
+  .hint{font-size:12.5px}
   .route{flex:1;min-height:0;column-gap:8px;margin-top:2px;overflow-y:auto}
   .route .col::before{left:9px}
-  .pier{font-size:11.5px;gap:5px;padding:6px 2px 6px 0;border-radius:7px}
-  .pier .dot{width:10px;height:10px;border-width:2.5px;margin-left:3px}
+  .pier{font-size:13.5px;gap:5px;padding:6px 2px 6px 0;border-radius:7px}
+  .pier .dot{width:11px;height:11px;border-width:2.5px;margin-left:3px}
   .pier .nm{line-height:1.2}
-  .pier .fee{font-size:10.5px}
+  .pier .fee{font-size:12px}
   .legend{display:none}
   .note{display:none}
   .install-note{display:none}
@@ -324,7 +324,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 15;
-const APP_VERSION = "3.2";
+const APP_VERSION = "3.3";
 const APP_UPDATED = "2026-08-25";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
