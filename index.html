@@ -105,8 +105,8 @@ h2{font-size:17px;font-weight:600;color:var(--water-deep)}
 }
 .pier{
   position:relative;display:flex;align-items:center;gap:9px;
-  width:100%;text-align:left;padding:6px 6px 6px 2px;
-  background:none;border:0;border-radius:9px;
+  width:100%;text-align:left;padding:6px 6px 6px 2px;min-height:37px;
+  background:none;border:0;border-radius:9px;overflow:hidden;
   font:inherit;font-size:16.5px;color:var(--ink);cursor:pointer
 }
 .pier:hover{background:#E7F0EC}
@@ -117,15 +117,14 @@ h2{font-size:17px;font-weight:600;color:var(--water-deep)}
 }
 .pier .nm{
   flex:1;min-width:0;line-height:1.3;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  overflow-wrap:anywhere
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .pier.sel .dot{background:var(--boat);border-color:var(--boat)}
 .pier.sel{font-weight:600}
 .pier.sel .nm{color:var(--boat)}
 .pier.between .dot{border-color:var(--water);background:var(--water)}
 .pier .fee{
-  flex:none;font-size:14px;font-weight:600;text-align:right;
+  flex:none;min-width:42px;font-size:14px;font-weight:600;text-align:right;
   color:var(--water);visibility:hidden;font-variant-numeric:tabular-nums
 }
 .pier.show-fee .fee{visibility:visible}
@@ -226,12 +225,13 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   .route-head{margin:8px 2px 0}
   h2{font-size:15px}
   .hint{font-size:12.5px}
-  .route{flex:1;min-height:0;column-gap:8px;margin-top:2px;overflow-y:auto}
+  .route{flex:1;min-height:0;column-gap:8px;margin-top:2px;overflow-y:auto;scrollbar-width:none}
+  .route::-webkit-scrollbar{display:none}
   .route .col::before{left:9px}
-  .pier{font-size:13.5px;gap:5px;padding:6px 2px 6px 0;border-radius:7px}
+  .pier{font-size:13.5px;gap:5px;padding:6px 2px 6px 0;min-height:32px;border-radius:7px}
   .pier .dot{width:11px;height:11px;border-width:2.5px;margin-left:3px}
   .pier .nm{line-height:1.2}
-  .pier .fee{font-size:12px}
+  .pier .fee{font-size:12px;min-width:36px}
   .legend{display:none}
   .note{display:none}
   .install-note{display:none}
@@ -324,7 +324,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 15;
-const APP_VERSION = "3.4";
+const APP_VERSION = "3.9";
 const APP_UPDATED = "2026-08-25";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
@@ -615,18 +615,28 @@ langToggleBtn.addEventListener("click",()=>{
 
 /* ---------- ตรวจว่าเนื้อหาพอดีจอหรือไม่ ----------
    วัดจากความสูงธรรมชาติของเนื้อหา (โหมดเลื่อน) ก่อน แล้วจึงตัดสินใจ:
-   พอดีจอ → ล็อกจอเดียว / ไม่พอดี (เช่น เบราว์เซอร์ใน LINE ขยายฟอนต์
-   หรือการ์ดผลลัพธ์สูงขึ้นเมื่อชื่อท่ายาว) → คงโหมดเลื่อนไว้ */
+   ล็อกจอเดียวเฉพาะตอนที่ "พอดีจริง ๆ" เท่านั้น — สูงกว่าจอ (เสี่ยงล้น เผื่อ
+   ความคลาดเคลื่อนไว้กว้างขึ้นกว่าเดิม) หรือสั้นกว่าจอมากจนเหลือช่องว่างเปล่า
+   เกินไป ให้ปล่อยเป็นโหมดเลื่อนตามธรรมชาติแทน จะได้ไม่มีช่องว่างเปล่าเกะกะ
+   และไม่เสี่ยงล้นจากค่าที่วัดคลาดเคลื่อนเล็กน้อย (เช่น แถบที่อยู่เว็บของ
+   เบราว์เซอร์ยุบ/ขยายเปลี่ยนความสูงจอจริงหลังวัดไปแล้ว) */
 const appEl=document.querySelector(".app");
 function fitCheck(){
   const body=document.body;
-  body.classList.add("autoscroll");      /* จัดวางแบบความสูงธรรมชาติ */
+  body.classList.add("autoscroll");      /* จัดวางแบบความสูงธรรมชาติ เพื่อวัดค่าจริง */
   const need=appEl.scrollHeight;         /* ความสูงที่ต้องใช้จริง */
-  if(need<=window.innerHeight+4)body.classList.remove("autoscroll");
+  const avail=window.innerHeight;
+  const OVERFLOW_SLACK=24;               /* เผื่อคลาดเคลื่อนฝั่งสูงเกิน */
+  const MAX_EMPTY_GAP=160;               /* ถ้าจะเหลือช่องว่างเกินนี้ ปล่อยเลื่อนธรรมชาติดีกว่า */
+  const fits = need<=avail+OVERFLOW_SLACK && need>=avail-MAX_EMPTY_GAP;
+  if(fits)body.classList.remove("autoscroll");
 }
 applyLang();      /* เรียกครั้งแรก: ตั้งค่าข้อความ+ป้ายท่า+ราคา แล้ว fitCheck() ในตัว */
-window.addEventListener("resize",fitCheck);
-window.addEventListener("orientationchange",fitCheck);
+/* debounce กัน resize ยิงรัวตอนแถบที่อยู่เว็บยุบ/ขยายบนมือถือ */
+let fitTimer=null;
+const fitCheckDebounced=()=>{clearTimeout(fitTimer);fitTimer=setTimeout(fitCheck,150);};
+window.addEventListener("resize",fitCheckDebounced);
+window.addEventListener("orientationchange",fitCheckDebounced);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitCheck);
 window.addEventListener("load",fitCheck);
 
@@ -658,8 +668,12 @@ function renderVersionInfo(){
     }
     return false;
   };
+  let lastCheck=0;
   function checkForUpdate(){
-    fetch(location.pathname+"?nocache="+Date.now(),{cache:"no-store"})
+    const now=Date.now();
+    if(now-lastCheck<3600000)return; /* เช็กถี่สุดชั่วโมงละครั้ง กันเปลืองเน็ตตอนสลับแอปไปมา */
+    lastCheck=now;
+    fetch(location.pathname+"?nocache="+now,{cache:"no-store"})
       .then(r=>r.ok?r.text():null)
       .then(html=>{
         if(!html)return;
