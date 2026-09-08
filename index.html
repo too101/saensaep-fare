@@ -324,8 +324,8 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
 const BASE_FARE = 16;
-const APP_VERSION = "4.0";
-const APP_UPDATED = "2026-09-07";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
+const APP_VERSION = "4.3";
+const APP_UPDATED = "2026-09-08";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 const piers=[
 {th:"ผ่านฟ้าลีลาศ",en:"Phan Fa Lilat"},{th:"ตลาดโบ๊เบ๊",en:"Talad Bobae"},{th:"สะพานเจริญผล",en:"Sapan Charoenphol"},{th:"สะพานหัวช้าง",en:"Sapan Hua Chang"},{th:"ประตูน้ำ",en:"Pratunam"},
@@ -407,10 +407,10 @@ const rle=["0x1","0x2","0x3","2x1,0x3","2x3,0x2","2x3,0x3",
 "4x1,2x4,0x2","4x2,2x3,0x3","4x2,2x4,0x3",
 "4x4,2x3,0x3","4x5,2x3,0x3","4x7,2x3,0x2",
 "6x1,4x6,2x5,0x1","6x2,4x7,2x3,0x2","6x5,4x5,2x2,0x3",
-"6x5,4x7,2x2,0x2","6x6,4x6,2x2,0x3",
-"8x2,6x5,4x6,2x3,0x2","8x5,6x5,4x5,2x3,0x1","8x6,6x4,4x6,2x2,0x2",
-"8x7,6x5,4x4,2x3,0x2","10x1,8x6,6x5,4x6,2x2,0x2","10x4,8x6,6x4,4x5,2x3,0x1",
-"10x5,8x7,6x4,4x4,2x3,0x1","10x6,8x6,6x4,4x4,2x3,0x2","10x7,8x6,6x3,4x5,2x2,0x3"];
+"6x5,4x7,2x2,0x2","6x7,4x5,2x2,0x3",
+"8x3,6x4,4x6,2x3,0x2","8x5,6x5,4x5,2x3,0x1","8x6,6x4,4x6,2x2,0x2",
+"8x7,6x5,4x4,2x3,0x2","10x1,8x6,6x5,4x6,2x1,0x3","10x4,8x6,6x4,4x5,2x3,0x1",
+"10x5,8x7,6x4,4x3,2x4,0x1","10x6,8x6,6x4,4x4,2x3,0x2","10x7,8x6,6x3,4x5,2x2,0x3"];
 const M=rle.map(r=>r.split(",").flatMap(p=>{const[v,n]=p.split("x").map(Number);return Array(n).fill(v)}));
 const tier=(a,b)=>a===b?null:M[Math.max(a,b)-1][Math.min(a,b)];
 
