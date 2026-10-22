@@ -269,7 +269,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
     <span class="eyebrow" id="eyebrow">ค่าโดยสารเรือคลองแสนแสบ</span>
     <button id="langToggle" type="button">English</button>
   </div>
-  <p class="sub" id="subText">แตะจุดบนแผนผังสองจุดเพื่อเลือกท่าต้นทางและปลายทาง ระบบจะแสดงค่าโดยสารทันที</p>
+  <p class="sub" id="subText">แตะจุดบนแผนผังเพื่อเลือกท่าต้นทางและปลายทาง ระบบจะแสดงค่าโดยสารทันที</p>
   <div id="noticeBar" role="status" hidden><span id="noticeText"></span><button id="noticeClose" type="button" aria-label="ปิด">×</button></div>
 </header>
 
@@ -295,17 +295,17 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
 
 <div class="foot">
 <details class="settings" id="settings">
-  <summary><span id="settingsSummaryText">ปรับค่าโดยสารเริ่มต้น</span> <span id="baseTag"></span></summary>
+  <summary><span id="settingsSummaryText">ค่าโดยสารเริ่มต้น</span> <span id="baseTag"></span></summary>
   <div class="settings-body">
     <div class="field">
       <label for="baseFare" id="baseFareLabel">ค่าโดยสารเริ่มต้น (ระยะใกล้สุด, บาท)</label>
       <input type="number" id="baseFare" min="1" max="99" step="1" inputmode="numeric">
     </div>
     <button id="resetBase" type="button">คืนค่าเดิม</button>
-    <p class="settings-note" id="settingsNote">เมื่ออัตราค่าโดยสารปรับขึ้น ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตามโดยส่วนต่างระหว่างระยะคงเดิม (+2 บาทต่อขั้น)</p>
+    <p class="settings-note" id="settingsNote">เมื่ออัตราค่าโดยสารเปลี่ยนแปลง ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตาม</p>
   </div>
 </details>
-<button id="srcToggle" type="button">ดาวน์โหลดซอร์สโค้ด ▾</button>
+<button id="srcToggle" type="button">ซอร์สโค้ด/ติดต่อ ▾</button>
 <button id="installBtn" type="button" hidden>เพิ่มไปยังหน้าจอหลัก</button>
 <span id="ver"></span>
 </div>
@@ -313,7 +313,6 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
 <button id="updateBar" type="button" hidden>มีเวอร์ชันใหม่กว่านี้ · แตะเพื่อโหลดหน้าล่าสุด ⟳</button>
 
 <p class="note">
-  <span id="notePrefix">ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง</span> ·
   <a class="src" id="srcLink1" href="https://github.com/too101/saensaep-fare/archive/refs/heads/main.zip">ดาวน์โหลดซอร์สโค้ด</a> ·
   <a class="src" id="srcLink2" href="https://github.com/too101/saensaep-fare">ดูโค้ดบน GitHub</a> ·
   <a class="src" id="contactLink" href="mailto:too101@gmail.com">ติดต่อผู้พัฒนา</a>
@@ -322,16 +321,16 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
 
 <script>
 /* ============================================================
-   ★ แก้ค่าโดยสารเริ่มต้นที่บรรทัดนี้จุดเดียว ★
-   เมื่ออัตราค่าโดยสารปรับ ให้เปลี่ยนเลขด้านล่างเป็นราคาระยะใกล้สุด
-   ราคาทุกระยะจะขยับตามอัตโนมัติ (ส่วนต่าง +2 บาทต่อขั้นคงเดิม)
+   ★ ค่าโดยสารเริ่มต้นแก้ที่ FARE_SCHEDULE (ด้านล่าง) ★
+   เมื่ออัตราค่าโดยสารเปลี่ยน ให้เพิ่มบรรทัด {from:"วันมีผล", base:ราคาระยะใกล้สุด}
+   ราคาทุกระยะจะขยับตามอัตโนมัติ (ส่วนต่างระหว่างระยะคงเดิม)
    ------------------------------------------------------------
    ★ ทุกครั้งที่แก้ไฟล์นี้ ให้ปรับเวอร์ชันและวันที่สองบรรทัดล่าง ★
    ระบบจะแสดงเวอร์ชันในหน้าเว็บ และใช้วันที่เทียบกับ commit ล่าสุด
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
-const APP_VERSION = "4.4";
-const APP_UPDATED = "2026-10-03";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
+const APP_VERSION = "4.5";
+const APP_UPDATED = "2026-10-22";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 /* ============================================================
    ตารางค่าโดยสารเริ่มต้นตามวันมีผล (เวลาไทย UTC+7 ไม่ขึ้นกับนาฬิกาเครื่อง)
@@ -340,13 +339,20 @@ const APP_UPDATED = "2026-10-03";   /* รูปแบบ ปี-เดือน
    ============================================================ */
 const FARE_SCHEDULE = [
   {from:"2026-01-01", base:16},
-  {from:"2026-10-07", base:17}
+  {from:"2026-10-07", base:17},
+  {from:"2026-10-25", base:18}
 ];
-const FARE_NOTICE_DAYS = 30;   /* แจ้งล่วงหน้ากี่วันก่อนมีผล */
-const FARE_AFTER_DAYS  = 14;   /* แจ้งต่ออีกกี่วันหลังมีผลแล้ว */
+const FARE_NOTICE_DAYS = 7;    /* แจ้งล่วงหน้ากี่วันก่อนมีผล */
+const FARE_AFTER_DAYS  = 7;    /* แจ้งต่ออีกกี่วันหลังมีผลแล้ว */
 /* ประกาศข่าวทั่วไป (ไม่ผูกกับราคา) — เพิ่มได้ไม่จำกัด
    {id:"รหัสไม่ซ้ำ", from:"วันเริ่มแสดง", until:"วันสุดท้าย", th:"ข้อความไทย", en:"English text"} */
-const NOTICES = [];
+const NOTICES = [
+  // ตัวอย่าง — เอา // หน้าบรรทัดออกเพื่อใช้งาน ข้อความจะแสดงตั้งแต่วัน from ถึงวัน until (รวมวันสุดท้าย)
+  // ตามวันที่เวลาไทย (id ต้องไม่ซ้ำกัน เพราะใช้จำว่าผู้ใช้กดปิดประกาศไหนไปแล้ว)
+  // {id:"pier-closed-2026-11", from:"2026-11-01", until:"2026-11-03",
+  //  th:"วันที่ 2 พ.ย. ท่าเรือบางกะปิปิดปรับปรุงชั่วคราว",
+  //  en:"Bang Kapi pier is temporarily closed on 2 Nov."},
+];
 
 const thaiToday=()=>new Date(Date.now()+7*3600000).toISOString().slice(0,10);
 const dayDiff=(a,b)=>Math.round((Date.parse(a+"T00:00:00Z")-Date.parse(b+"T00:00:00Z"))/86400000);
@@ -373,22 +379,21 @@ let lang="th";
 const T={
   th:{
     eyebrow:"ค่าโดยสารเรือคลองแสนแสบ",
-    sub:"แตะจุดบนแผนผังสองจุดเพื่อเลือกท่าต้นทางและปลายทาง ระบบจะแสดงค่าโดยสารทันที",
+    sub:"แตะจุดบนแผนผังเพื่อเลือกท่าต้นทางและปลายทาง ระบบจะแสดงค่าโดยสารทันที",
     unit:"บาท",
     clear:"เริ่มใหม่",
     routeH2:"แผนผังเส้นทาง 27 ท่า",
     hint:"แตะจุดแรก = ต้นทาง · จุดที่สอง = ปลายทาง",
     origin:"ต้นทาง",
-    settingsSummary:"ปรับค่าโดยสารเริ่มต้น",
+    settingsSummary:"ค่าโดยสารเริ่มต้น",
     baseFareLabel:"ค่าโดยสารเริ่มต้น (ระยะใกล้สุด, บาท)",
     resetBase:v=>"คืนค่าเดิม ("+v+" บาท)",
-    settingsNote:"เมื่ออัตราค่าโดยสารปรับขึ้น ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตามโดยส่วนต่างระหว่างระยะคงเดิม (+2 บาทต่อขั้น)",
-    srcClosed:"ดาวน์โหลดซอร์สโค้ด ▾",
-    srcOpen:"ซ่อนลิงก์ซอร์สโค้ด ▴",
+    settingsNote:"เมื่ออัตราค่าโดยสารเปลี่ยนแปลง ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตาม",
+    srcClosed:"ซอร์สโค้ด/ติดต่อ ▾",
+    srcOpen:"ซอร์สโค้ด/ติดต่อ ▴",
     updateBar:"มีเวอร์ชันใหม่กว่านี้ · แตะเพื่อโหลดหน้าล่าสุด ⟳",
-    fareSoon:(d,b)=>"📢 ตั้งแต่ "+d+" ค่าโดยสารเริ่มต้นจะปรับเป็น "+b+" บาท (ตอนนี้แสดงราคาเดิมอยู่)",
-    fareDone:(d,b)=>"📢 ตั้งแต่ "+d+" ค่าโดยสารเริ่มต้นปรับเป็น "+b+" บาทแล้ว",
-    notePrefix:"ถอดข้อมูลจากตารางอัตราค่าโดยสารของผู้ให้บริการ อัตราอาจเปลี่ยนแปลงได้ โปรดตรวจสอบป้ายประกาศที่ท่าเรืออีกครั้ง",
+    fareSoon:(d,b)=>"ตั้งแต่ "+d+" ค่าโดยสารเริ่มต้นจะปรับเป็น "+b+" บาท",
+    fareDone:(d,b)=>"ค่าโดยสารเริ่มต้นได้ปรับเป็น "+b+" บาท ตั้งแต่ "+d,
     srcLink1:"ดาวน์โหลดซอร์สโค้ด",
     srcLink2:"ดูโค้ดบน GitHub",
     srcLink3:"ติดต่อผู้พัฒนา",
@@ -405,22 +410,21 @@ const T={
   },
   en:{
     eyebrow:"Khlong Saen Saep Boat Fare",
-    sub:"Tap two points on the map to pick your origin and destination pier — the fare shows instantly.",
+    sub:"Tap points on the map to pick your origin and destination pier — the fare shows instantly.",
     unit:"Baht",
     clear:"Reset",
     routeH2:"Route Map (27 Piers)",
     hint:"Tap 1st point = origin · 2nd point = destination",
     origin:"Origin",
-    settingsSummary:"Adjust starting fare",
+    settingsSummary:"Starting fare",
     baseFareLabel:"Starting fare (shortest distance, Baht)",
     resetBase:v=>"Reset to default ("+v+" Baht)",
-    settingsNote:"When the fare goes up, just change the starting fare — every other tier shifts with it, keeping the same +2 Baht step between tiers.",
-    srcClosed:"Download source code ▾",
-    srcOpen:"Hide source links ▴",
+    settingsNote:"When fares change, just edit the starting fare — every other tier shifts with it.",
+    srcClosed:"Source code / Contact ▾",
+    srcOpen:"Source code / Contact ▴",
     updateBar:"A newer version is available · tap to reload ⟳",
-    fareSoon:(d,b)=>"📢 From "+d+", the starting fare changes to "+b+" baht (current fares shown for now)",
-    fareDone:(d,b)=>"📢 Since "+d+", the starting fare is "+b+" baht",
-    notePrefix:"Fares are transcribed from the operator's official rate table and may change — please check the notice board at the pier.",
+    fareSoon:(d,b)=>"From "+d+", the starting fare will change to "+b+" baht",
+    fareDone:(d,b)=>"The starting fare changed to "+b+" baht from "+d,
     srcLink1:"Download source code",
     srcLink2:"View code on GitHub",
     srcLink3:"Contact the developer",
@@ -464,7 +468,7 @@ unitEl=document.getElementById("unitText"),clearBtn=document.getElementById("cle
 routeH2El=document.getElementById("routeH2"),hintEl=document.getElementById("hintText"),
 settingsSummaryEl=document.getElementById("settingsSummaryText"),baseFareLabelEl=document.getElementById("baseFareLabel"),
 resetBaseBtn=document.getElementById("resetBase"),settingsNoteEl=document.getElementById("settingsNote"),
-notePrefixEl=document.getElementById("notePrefix"),srcLink1El=document.getElementById("srcLink1"),
+srcLink1El=document.getElementById("srcLink1"),
 srcLink2El=document.getElementById("srcLink2"),contactLinkEl=document.getElementById("contactLink"),
 langToggleBtn=document.getElementById("langToggle"),verEl=document.getElementById("ver"),
 updateBarEl=document.getElementById("updateBar");
@@ -627,7 +631,6 @@ function applyLang(){
   baseFareLabelEl.textContent=t.baseFareLabel;
   resetBaseBtn.textContent=t.resetBase(BASE_FARE);
   settingsNoteEl.textContent=t.settingsNote;
-  notePrefixEl.textContent=t.notePrefix;
   srcLink1El.textContent=t.srcLink1;
   srcLink2El.textContent=t.srcLink2;
   contactLinkEl.textContent=t.srcLink3;
