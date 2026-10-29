@@ -319,7 +319,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    ระบบจะแสดงเวอร์ชันในหน้าเว็บ และใช้วันที่เทียบกับ commit ล่าสุด
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
-const APP_VERSION = "4.8";
+const APP_VERSION = "4.9";
 const APP_UPDATED = "2026-10-22";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 /* ============================================================
@@ -772,9 +772,7 @@ function renderVersionInfo(){
         const m=html.match(/APP_VERSION\s*=\s*"([^"]+)"/);
         if(!m)return;
         serverVer=m[1];
-        let dismissed=null;
-        try{dismissed=localStorage.getItem("dismissVer");}catch(e){}
-        if(newer(serverVer,APP_VERSION)&&serverVer!==dismissed){bar.hidden=false;fitCheck();}
+        if(newer(serverVer,APP_VERSION)){bar.hidden=false;fitCheck();}
       })
       .catch(()=>{});
   }
@@ -786,13 +784,9 @@ function renderVersionInfo(){
     if(document.visibilityState==="visible")checkForUpdate();
   });
   bar.addEventListener("click",()=>{
-    try{
-      if(serverVer){
-        localStorage.setItem("dismissVer",serverVer);
-        localStorage.setItem("pendingUpdate",APP_VERSION+">"+serverVer); /* จำไว้ว่ากดอัปเดตแล้ว รอยืนยันหลังโหลดเวอร์ชันใหม่ */
-      }
-    }catch(e){}
-    bar.hidden=true;
+    /* จดไว้แค่ว่า "กดอัปเดตแล้ว" เพื่อยืนยันผลหลังเปิดเวอร์ชันใหม่ได้สำเร็จ — ไม่ซ่อนแถบ ไม่จำว่าอัปเดตแล้ว
+       ถ้าโหลดไม่สำเร็จ หรือได้หน้าเก่ากลับมา (CDN/แคช) แถบจะยังแจ้งเวอร์ชันเดิมต่อ จนกว่าจะเปิดเวอร์ชันใหม่ได้จริง */
+    try{if(serverVer)localStorage.setItem("pendingUpdate",APP_VERSION+">"+serverVer);}catch(e){}
     location.href=location.pathname+"?v="+Date.now();
   });
 })();
