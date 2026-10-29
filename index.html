@@ -150,7 +150,7 @@ h2{font-size:17px;font-weight:600;color:var(--water-deep)}
   display:flex;align-items:end;gap:14px;flex-wrap:wrap
 }
 label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:6px}
-.settings-body input[type=number]{
+#baseFare{
   width:110px;height:42px;padding:0 12px;
   font:inherit;font-size:16px;font-weight:600;color:var(--ink);
   background:#fff;border:1.5px solid var(--line);border-radius:10px
@@ -291,7 +291,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
   <div class="settings-body">
     <div class="field">
       <label for="baseFare" id="baseFareLabel">ค่าโดยสารเริ่มต้น (ระยะใกล้สุด, บาท)</label>
-      <input type="number" id="baseFare" min="1" max="99" step="1" inputmode="numeric">
+      <input type="text" id="baseFare" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off">
     </div>
     <button id="resetBase" type="button">คืนค่าเดิม</button>
     <p class="settings-note" id="settingsNote">เมื่ออัตราค่าโดยสารเปลี่ยนแปลง ให้แก้เฉพาะราคาเริ่มต้น ราคาทุกระยะจะขยับตาม</p>
@@ -319,7 +319,7 @@ label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margi
    ระบบจะแสดงเวอร์ชันในหน้าเว็บ และใช้วันที่เทียบกับ commit ล่าสุด
    บน GitHub เพื่อแจ้งผู้ใช้ให้รีเฟรชเมื่อมีเวอร์ชันใหม่กว่า
    ============================================================ */
-const APP_VERSION = "4.7";
+const APP_VERSION = "4.8";
 const APP_UPDATED = "2026-10-22";   /* รูปแบบ ปี-เดือน-วัน (ค.ศ.) */
 
 /* ============================================================
@@ -330,7 +330,8 @@ const APP_UPDATED = "2026-10-22";   /* รูปแบบ ปี-เดือน
 const FARE_SCHEDULE = [
   {from:"2026-01-01", base:16},
   {from:"2026-10-07", base:17},
-  {from:"2026-10-25", base:18}
+  {from:"2026-10-25", base:18},
+  {from:"2026-10-30", base:17}
 ];
 const FARE_NOTICE_DAYS = 7;    /* แจ้งล่วงหน้ากี่วันก่อนมีผล */
 const FARE_AFTER_DAYS  = 7;    /* แจ้งต่ออีกกี่วันหลังมีผลแล้ว */
@@ -506,10 +507,14 @@ function pick(i){
 }
 clearBtn.addEventListener("click",()=>{selA=null;selB=null;update();fitCheck();});
 
+/* ราคาที่ปรับเองรับเฉพาะจำนวนเต็ม 1–99: ตัดทศนิยม/ตัวอักษร/เครื่องหมายทิ้งทันที (รวมกรณีวางข้อความ) */
 baseFare.addEventListener("input",()=>{
-  const v=parseInt(baseFare.value,10);
-  if(!isNaN(v)&&v>=1&&v<=99){base=v;drawLegend();update();}
+  const d=baseFare.value.split(/[.,]/)[0].replace(/\D/g,"").replace(/^0+(?=\d)/,"").slice(0,2);
+  if(baseFare.value!==d)baseFare.value=d;
+  const v=parseInt(d,10);
+  if(v>=1&&v<=99){base=v;drawLegend();update();}
 });
+baseFare.addEventListener("blur",()=>{baseFare.value=base;}); /* ช่องว่าง/0 → กลับเป็นราคาที่ใช้อยู่ */
 resetBaseBtn.addEventListener("click",()=>{
   base=BASE_FARE;baseFare.value=BASE_FARE;drawLegend();update();
 });
@@ -667,10 +672,13 @@ function activeNotice(){
   const today=thaiToday(),lg=lang;
   const fd=d=>new Date(d+"T00:00:00Z").toLocaleDateString(T[lg].dateLocale,{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
   const list=[];
-  for(let i=1;i<FARE_SCHEDULE.length;i++){
-    const e=FARE_SCHEDULE[i],n=dayDiff(e.from,today);
-    if(n>0&&n<=FARE_NOTICE_DAYS)list.push({id:"fare-"+e.from+"-"+e.base+"-soon",text:T[lg].fareSoon(fd(e.from),e.base)});
-    else if(n<=0&&-n<=FARE_AFTER_DAYS)list.push({id:"fare-"+e.from+"-"+e.base+"-done",text:T[lg].fareDone(fd(e.from),e.base)});
+  /* ประกาศราคาเฉพาะรายการล่าสุดที่เข้าช่วงแจ้งล่วงหน้าแล้ว (รายการเก่ากว่าถูกแทนที่ ไม่โชว์ซ้อน) */
+  let k=-1;
+  for(let i=1;i<FARE_SCHEDULE.length;i++)if(dayDiff(FARE_SCHEDULE[i].from,today)<=FARE_NOTICE_DAYS)k=i;
+  if(k>0){
+    const e=FARE_SCHEDULE[k],n=dayDiff(e.from,today);
+    if(n>0)list.push({id:"fare-"+e.from+"-"+e.base+"-soon",text:T[lg].fareSoon(fd(e.from),e.base)});
+    else if(-n<=FARE_AFTER_DAYS)list.push({id:"fare-"+e.from+"-"+e.base+"-done",text:T[lg].fareDone(fd(e.from),e.base)});
   }
   for(const n of NOTICES)if(n.from<=today&&today<=n.until)list.push({id:n.id,text:n[lg]||n.th});
   let dis="";try{dis=localStorage.getItem("dismissNotice")||"";}catch(e){}
@@ -732,6 +740,26 @@ function renderVersionInfo(){
     }
     return false;
   };
+  /* บันทึกว่าอัปเดตสำเร็จ: ถ้าเคยกดอัปเดตไว้ และตอนนี้หน้าที่เปิดเป็นเวอร์ชันปลายทาง (หรือใหม่กว่า)
+     แล้ว → ส่งเหตุการณ์ "update-ok/จาก-to-เป็น" เข้า GoatCounter หนึ่งครั้ง แล้วล้างค่าที่จำไว้
+     (ถ้าโหลดมาแล้วยังเป็นเวอร์ชันเดิม จะไม่บันทึก/ไม่ล้าง — รอรอบที่อัปเดตได้จริง) */
+  try{
+    const pend=localStorage.getItem("pendingUpdate");
+    if(pend){
+      const [from,to]=pend.split(">");
+      if(from&&to&&!newer(to,APP_VERSION)){
+        localStorage.removeItem("pendingUpdate");
+        const send=()=>{
+          if(window.goatcounter&&window.goatcounter.count){
+            window.goatcounter.count({path:"update-ok/"+from+"-to-"+APP_VERSION,title:"Update OK "+from+" → "+APP_VERSION,event:true});
+            return true;
+          }
+          return false;
+        };
+        if(!send())window.addEventListener("load",()=>{let n=0;const t=setInterval(()=>{if(send()||++n>20)clearInterval(t);},500);});
+      }
+    }
+  }catch(e){}
   let lastCheck=0;
   function checkForUpdate(){
     const now=Date.now();
@@ -758,7 +786,12 @@ function renderVersionInfo(){
     if(document.visibilityState==="visible")checkForUpdate();
   });
   bar.addEventListener("click",()=>{
-    try{if(serverVer)localStorage.setItem("dismissVer",serverVer);}catch(e){}
+    try{
+      if(serverVer){
+        localStorage.setItem("dismissVer",serverVer);
+        localStorage.setItem("pendingUpdate",APP_VERSION+">"+serverVer); /* จำไว้ว่ากดอัปเดตแล้ว รอยืนยันหลังโหลดเวอร์ชันใหม่ */
+      }
+    }catch(e){}
     bar.hidden=true;
     location.href=location.pathname+"?v="+Date.now();
   });
